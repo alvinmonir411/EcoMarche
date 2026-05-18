@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">FastLain image placeholder</title>
+  <desc id="desc">A clean premium fashion placeholder for missing product imagery.</desc>
+  <rect width="800" height="1000" fill="#f6f2ea"/>
+  <rect x="96" y="120" width="608" height="760" rx="28" fill="#fff" stroke="#e6e1d8" stroke-width="2"/>
+  <path d="M400 260c42 0 76 34 76 76s-34 76-76 76-76-34-76-76 34-76 76-76Zm-126 410c24-104 76-156 126-156s102 52 126 156H274Z" fill="#163020" opacity=".12"/>
+  <text x="400" y="760" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#163020">FastLain</text>
+  <text x="400" y="804" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" letter-spacing="4" fill="#74716b">NATURALLY YOURS</text>
+</svg>

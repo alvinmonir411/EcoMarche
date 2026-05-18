@@ -1,0 +1,196 @@
+import type { CartItem, Category, Product } from "@/lib/types";
+
+export const sampleCategories: Category[] = [
+  {
+    id: "1",
+    name: "Women Dress",
+    slug: "women-dress",
+    description: "Elegant dresses for daily and occasion wear.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    id: "2",
+    name: "Saree",
+    slug: "saree",
+    description: "Classic sarees for weddings and festivals.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    id: "3",
+    name: "Kurti",
+    slug: "kurti",
+    description: "Comfortable kurtis for simple everyday styling.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=900&q=80",
+  },
+  {
+    id: "4",
+    name: "Accessories",
+    slug: "accessories",
+    description: "Finishing pieces for a complete outfit.",
+    imageUrl:
+      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=900&q=80",
+  },
+];
+
+export const sampleProducts: Product[] = [
+  {
+    id: "1",
+    slug: "rose-midi-dress",
+    name: "Rose Midi Dress",
+    description: "A soft midi dress for simple daily style.",
+    category: "Midi Dress",
+    price: 68,
+    discountPrice: 59,
+    size: "M",
+    color: "Rose",
+    stock: 12,
+    imageUrl:
+      "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=900&q=80",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+    ],
+    rating: 4.8,
+    reviewCount: 124,
+    material: "Soft cotton blend with a light inner lining.",
+    deliveryInfo: "Standard delivery inside Dhaka in 2-3 business days.",
+    returnInfo: "Easy return within 7 days for unused items.",
+  },
+  {
+    id: "2",
+    slug: "classic-black-dress",
+    name: "Classic Black Dress",
+    description: "A clean black dress for casual and evening looks.",
+    category: "Evening Dress",
+    price: 82,
+    size: "S",
+    color: "Black",
+    stock: 8,
+    imageUrl:
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+    ],
+    rating: 4.7,
+    reviewCount: 98,
+    material: "Smooth woven fabric with a comfortable regular fit.",
+    deliveryInfo: "Standard delivery in 2-5 business days.",
+    returnInfo: "Return or exchange within 7 days.",
+  },
+  {
+    id: "3",
+    slug: "cream-summer-dress",
+    name: "Cream Summer Dress",
+    description: "A light dress made for warm days.",
+    category: "Summer Dress",
+    price: 59,
+    size: "L",
+    color: "Cream",
+    stock: 15,
+    imageUrl:
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
+    ],
+    rating: 4.6,
+    reviewCount: 76,
+    material: "Lightweight breathable fabric for warm weather.",
+    deliveryInfo: "Standard delivery in 2-5 business days.",
+    returnInfo: "Return or exchange within 7 days.",
+  },
+  {
+    id: "4",
+    slug: "cotton-kurti-set",
+    name: "Cotton Kurti Set",
+    description: "A breathable kurti set with a relaxed polished fit.",
+    category: "Kurti",
+    price: 48,
+    discountPrice: 42,
+    size: "S, M, L, XL",
+    color: "Blue",
+    stock: 18,
+    imageUrl:
+      "https://images.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=900&q=80",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=900&q=80",
+    ],
+    rating: 4.9,
+    reviewCount: 141,
+    material: "Pure cotton feel with easy-care stitching.",
+    deliveryInfo: "Standard delivery inside Bangladesh in 2-5 business days.",
+    returnInfo: "Easy return within 7 days for unused items.",
+  },
+  {
+    id: "5",
+    slug: "silk-saree",
+    name: "Silk Saree",
+    description: "A graceful saree for festive and formal moments.",
+    category: "Saree",
+    price: 115,
+    size: "Free Size",
+    color: "Red",
+    stock: 9,
+    imageUrl:
+      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=900&q=80",
+    ],
+    rating: 4.8,
+    reviewCount: 88,
+    material: "Silk blend with a soft drape and festive finish.",
+    deliveryInfo: "Carefully packed delivery in 2-5 business days.",
+    returnInfo: "Return within 7 days if unused and folded with tags.",
+  },
+  {
+    id: "6",
+    slug: "soft-knit-cardigan",
+    name: "Soft Knit Cardigan",
+    description: "Warm layering for winter days and evening plans.",
+    category: "Winter Wear",
+    price: 64,
+    size: "M, L, XL",
+    color: "Olive",
+    stock: 16,
+    imageUrl:
+      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=900&q=80",
+    galleryImages: [
+      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=900&q=80",
+    ],
+    rating: 4.5,
+    reviewCount: 52,
+    material: "Soft knit acrylic blend for cozy layering.",
+    deliveryInfo: "Standard delivery in 2-5 business days.",
+    returnInfo: "Return or exchange within 7 days.",
+  },
+];
+
+export const sampleCartItems: CartItem[] = [
+  {
+    id: "cart-1",
+    product: sampleProducts[0],
+    quantity: 2,
+    selectedSize: "M",
+    selectedColor: "Rose",
+  },
+  {
+    id: "cart-2",
+    product: sampleProducts[3],
+    quantity: 1,
+    selectedSize: "L",
+    selectedColor: "Blue",
+  },
+];

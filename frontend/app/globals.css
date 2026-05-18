@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #163020; /* FastLain deep forest */
+  --color-primary-light: #244633;
+  --color-secondary: #0b0b0a; /* premium black */
+  --color-accent: #f6f2ea; /* soft beige */
+  --color-accent-dark: #e8dfd2;
+  --color-muted: #74716b;
+  --color-border: #e6e1d8;
+  --color-gold: #a98f5d; /* subtle muted gold */
+  
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'Playfair Display', serif; /* For that luxury feel */
+}
+
+:root {
+  --foreground-rgb: 10, 10, 10;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: white;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-secondary;
+  }
+}
+
+/* Luxury animations & utilities */
+.hover-zoom {
+  @apply transition-transform duration-700 ease-in-out;
+}
+.hover-zoom:hover {
+  @apply scale-105;
+}
+
+.premium-shadow {
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+}
+
+.premium-shadow-hover {
+  @apply transition-all duration-300;
+}
+.premium-shadow-hover:hover {
+  box-shadow: 0 20px 50px -12px rgba(0,0,0,0.08);
+}
+
+/* Custom scrollbar */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 4px;
+}
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #e5e5e5;
+  border-radius: 10px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #d4d4d4;
+}
+
+/* Remove default focus styles and add premium ones */
+:focus-visible {
+  @apply outline-none ring-2 ring-primary ring-offset-2;
+}

@@ -1,0 +1,50 @@
+{
+  "name": "ecomarche-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "nest start",
+    "start:dev": "set PATH=%PATH%;C:\\Windows\\System32&& nest start --watch",
+    "prebuild": "node -e \"const fs=require('fs'); fs.rmSync('dist',{recursive:true,force:true}); fs.rmSync('tsconfig.tsbuildinfo',{force:true})\"",
+    "build": "nest build",
+    "seed": "npm run build && node dist/seed/seed.js",
+    "start:prod": "node dist/main",
+    "format": "echo \"Add Prettier later if needed\""
+  },
+  "dependencies": {
+    "@nestjs/common": "11.1.21",
+    "@nestjs/config": "latest",
+    "@nestjs/core": "11.1.21",
+    "@nestjs/jwt": "^11.0.2",
+    "@nestjs/mapped-types": "latest",
+    "@nestjs/passport": "^11.0.5",
+    "@nestjs/platform-express": "11.1.21",
+    "@nestjs/swagger": "^11.4.3",
+    "@nestjs/typeorm": "latest",
+    "bcrypt": "^6.0.0",
+    "class-transformer": "latest",
+    "class-validator": "latest",
+    "dotenv": "latest",
+    "multer": "^2.1.1",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "pg": "latest",
+    "reflect-metadata": "latest",
+    "rxjs": "latest",
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "latest"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "latest",
+    "@nestjs/schematics": "latest",
+    "@nestjs/testing": "latest",
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "latest",
+    "@types/multer": "^2.1.0",
+    "@types/node": "latest",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/pg": "latest",
+    "source-map-support": "latest",
+    "typescript": "latest"
+  }
+}
