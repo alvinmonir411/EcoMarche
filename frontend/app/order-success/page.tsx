@@ -26,7 +26,7 @@ export default function OrderSuccessPage() {
         </h1>
         
         <p className="mt-3 text-sm text-stone-600 leading-relaxed">
-          Thank you for shopping with FastLain. We&apos;ve received your order and are getting it ready to ship. 
+          Thank you for shopping with EcoMarche. We&apos;ve received your order and are getting it ready to ship. 
         </p>
 
         <div className="mt-8 flex flex-col gap-3">

@@ -56,7 +56,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
             {product.name}
           </h2>
           <p className="mt-2 text-sm text-stone-600">
-            Size: {item.selectedSize || product.size || 'N/A'} | Color: {item.selectedColor || product.color || 'N/A'}
+            Size: {item.selectedSize || product.sizes?.[0] || 'N/A'} | Color: {item.selectedColor || product.colors?.[0] || 'N/A'}
           </p>
           <p className="mt-2 font-semibold text-stone-950">${price}</p>
         </div>

@@ -28,6 +28,25 @@ export class PaymentsService {
     return this.paymentsRepository.save(payment);
   }
 
+  async findAll() {
+    const payments = await this.paymentsRepository.find({
+      relations: ["order", "order.user"],
+      order: { createdAt: "DESC" },
+    });
+
+    return payments.map(payment => ({
+      id: payment.id,
+      transactionId: payment.transactionId,
+      orderId: payment.order?.id,
+      customerName: payment.order?.customerName,
+      user: payment.order?.user ? { name: payment.order.user.name } : null,
+      paymentMethod: payment.method || payment.order?.paymentMethod,
+      amount: payment.amount,
+      createdAt: payment.createdAt,
+      status: payment.status,
+    }));
+  }
+
   async findOne(id: string) {
     const payment = await this.paymentsRepository.findOne({
       where: { id },

@@ -59,7 +59,7 @@ export default function LoginPage() {
             <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
             
             <div className="relative z-10">
-              <Link href="/" className="text-3xl font-bold tracking-tighter">FastLain</Link>
+              <Link href="/" className="text-3xl font-bold tracking-tighter">EcoMarche</Link>
               <h2 className="text-5xl font-bold mt-20 leading-tight">Welcome back <br /> to the movement.</h2>
               <p className="mt-6 text-primary-foreground/80 text-lg leading-relaxed max-w-sm">
                 Log in to access your personalized dashboard, track your sustainable orders, and manage your wishlist.
@@ -67,7 +67,7 @@ export default function LoginPage() {
             </div>
 
             <div className="relative z-10 text-sm font-medium text-primary-foreground/60">
-              © 2026 FastLain. Naturally Yours.
+              © 2026 EcoMarche. Naturally Yours.
             </div>
           </div>
 
@@ -125,7 +125,7 @@ export default function LoginPage() {
 
             <div className="mt-12 text-center">
               <p className="text-gray-400 font-medium">
-                New to FastLain?{" "}
+                New to EcoMarche?{" "}
                 <Link href="/register" className="text-primary font-bold hover:underline ml-1">Create an Account</Link>
               </p>
             </div>

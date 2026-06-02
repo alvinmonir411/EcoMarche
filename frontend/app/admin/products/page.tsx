@@ -83,12 +83,13 @@ export default function AdminProductsPage() {
                       <th className="px-8 py-5">Category</th>
                       <th className="px-8 py-5">Price</th>
                       <th className="px-8 py-5">Stock</th>
+                      <th className="px-8 py-5">Status</th>
                       <th className="px-8 py-5 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-accent/10">
                     {loading ? (
-                       <tr><td colSpan={5} className="px-8 py-10 text-center animate-pulse">Loading products...</td></tr>
+                       <tr><td colSpan={6} className="px-8 py-10 text-center animate-pulse">Loading products...</td></tr>
                     ) : Array.isArray(products) && products.length > 0 ? (
                       products.map((product) => (
                         <tr key={product.id} className="hover:bg-accent/5 transition-colors group">
@@ -96,21 +97,44 @@ export default function AdminProductsPage() {
                             <div className="flex items-center gap-4">
                               <div className="relative w-12 h-12 bg-accent/10 rounded-xl overflow-hidden flex-shrink-0">
                                 <Image
-                                  src={getImageUrl(product.imageUrl || getProductFallbackImage(product.slug || product.id || product.name))}
+                                  src={getImageUrl(product.thumbnail || product.imageUrl || getProductFallbackImage(product.slug || product.id || product.name))}
                                   alt={product.name}
                                   fill
                                   sizes="48px"
                                   className="object-cover"
                                 />
                               </div>
-                              <span className="font-bold text-secondary group-hover:text-primary transition-colors">{product.name}</span>
+                              <div className="flex flex-col">
+                                <span className="font-bold text-secondary group-hover:text-primary transition-colors">{product.name}</span>
+                                {product.sku && <span className="text-[11px] text-gray-400 font-medium">SKU: {product.sku}</span>}
+                              </div>
                             </div>
                           </td>
                           <td className="px-8 py-6 text-gray-500 font-medium">{product.category?.name || 'Uncategorized'}</td>
-                          <td className="px-8 py-6 font-bold text-secondary">${Number(product.price || 0).toFixed(2)}</td>
+                          <td className="px-8 py-6">
+                            <div className="flex flex-col">
+                              {product.salePrice ? (
+                                <>
+                                  <span className="font-bold text-primary">${Number(product.salePrice).toFixed(2)}</span>
+                                  <span className="text-xs text-gray-400 line-through">${Number(product.price).toFixed(2)}</span>
+                                </>
+                              ) : (
+                                <span className="font-bold text-secondary">${Number(product.price).toFixed(2)}</span>
+                              )}
+                            </div>
+                          </td>
                           <td className="px-8 py-6">
                              <span className={`font-bold ${product.stock < 10 ? 'text-red-500' : 'text-gray-500'}`}>{product.stock || 0}</span>
                              <span className="text-[10px] text-gray-400 ml-1 font-bold">UNITS</span>
+                          </td>
+                          <td className="px-8 py-6">
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                              product.active && product.status === "ACTIVE"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}>
+                              {product.active && product.status === "ACTIVE" ? "Active" : "Inactive"}
+                            </span>
                           </td>
                           <td className="px-8 py-6 text-right">
                             <div className="flex justify-end gap-3">
@@ -128,7 +152,7 @@ export default function AdminProductsPage() {
                         </tr>
                       ))
                     ) : (
-                      <tr><td colSpan={5} className="px-8 py-10 text-center text-gray-400 font-bold uppercase tracking-widest">No products found</td></tr>
+                      <tr><td colSpan={6} className="px-8 py-10 text-center text-gray-400 font-bold uppercase tracking-widest">No products found</td></tr>
                     )}
                   </tbody>
                 </table>

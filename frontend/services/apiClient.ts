@@ -1,6 +1,7 @@
 import { ApiResponse } from './types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
+const API_TIMEOUT_MS = Number(process.env.NEXT_PUBLIC_API_TIMEOUT_MS || 15000);
 
 type FetchOptions = RequestInit & {
   params?: Record<string, string | number | boolean>;
@@ -39,8 +40,12 @@ export async function fetchApi<T>(endpoint: string, options: FetchOptions = {}):
       }
     }
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+
     const config: RequestInit = {
       ...customConfig,
+      signal: customConfig.signal || controller.signal,
       headers: {
         ...authHeaders,
         ...headers,
@@ -48,6 +53,7 @@ export async function fetchApi<T>(endpoint: string, options: FetchOptions = {}):
     };
 
     const response = await fetch(url, config);
+    clearTimeout(timeout);
     
     // Avoid parsing JSON if the response is 204 No Content
     if (response.status === 204) {

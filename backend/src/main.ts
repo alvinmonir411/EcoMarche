@@ -24,8 +24,12 @@ async function bootstrap() {
   app.setGlobalPrefix(API_PREFIX);
 
   app.enableCors({
-    origin: configService.get<string>("FRONTEND_URL", DEFAULT_FRONTEND_URL),
-    methods: ["GET", "POST", "PATCH", "DELETE"],
+    origin: [
+      configService.get<string>("FRONTEND_URL", DEFAULT_FRONTEND_URL),
+      "http://localhost:3000",
+      "http://127.0.0.1:3000",
+    ],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
   });
 
@@ -59,9 +63,9 @@ async function bootstrap() {
 
   const port = Number(configService.get<string>("PORT") || DEFAULT_PORT);
 
-  await app.listen(port);
-  logger.log(`API is running on http://localhost:${port}/${API_PREFIX}`);
-  logger.log(`Swagger docs are available at http://localhost:${port}/${SWAGGER_PATH}`);
+  await app.listen(port, "0.0.0.0");
+  logger.log(`API is running on http://127.0.0.1:${port}/${API_PREFIX}`);
+  logger.log(`Swagger docs are available at http://127.0.0.1:${port}/${SWAGGER_PATH}`);
 }
 
 bootstrap();

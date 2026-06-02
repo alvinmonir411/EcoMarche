@@ -29,6 +29,24 @@ export const categoryApi = {
   uploadImage: (id: string, formData: FormData) => fetchApi<any>(`/categories/${id}/image`, { method: 'POST', body: formData }),
 };
 
+// --- Subcategory API Helper ---
+export const subCategoryApi = {
+  getAll: (params?: any) => fetchApi<any>('/subcategories', { method: 'GET', params }),
+  getById: (id: string) => fetchApi<any>(`/subcategories/${id}`, { method: 'GET' }),
+  create: (data: any) => fetchApi<any>('/subcategories', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: any) => fetchApi<any>(`/subcategories/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  delete: (id: string) => fetchApi<any>(`/subcategories/${id}`, { method: 'DELETE' }),
+};
+
+// --- Brand API Helper ---
+export const brandApi = {
+  getAll: () => fetchApi<any>('/brands', { method: 'GET' }),
+  getById: (id: string) => fetchApi<any>(`/brands/${id}`, { method: 'GET' }),
+  create: (data: any) => fetchApi<any>('/brands', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: any) => fetchApi<any>(`/brands/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  delete: (id: string) => fetchApi<any>(`/brands/${id}`, { method: 'DELETE' }),
+};
+
 // --- Cart API Helper ---
 export const cartApi = {
   getCart: () => fetchApi<any>('/carts/my', { method: 'GET' }),
@@ -93,4 +111,37 @@ export const couponApi = {
 export const paymentApi = {
   getAll: () => fetchApi<any>('/payments', { method: 'GET' }),
   updateStatus: (id: string, status: string) => fetchApi<any>(`/payments/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+  createStripeSession: (orderId: string) => fetchApi<any>('/payments/stripe-session', { method: 'POST', body: JSON.stringify({ orderId }) }),
+};
+
+// --- Site Settings API Helper ---
+export const settingsApi = {
+  get: () => fetchApi<any>('/settings', { method: 'GET' }),
+  update: (data: any) => fetchApi<any>('/settings', { method: 'PATCH', body: JSON.stringify(data) }),
+};
+
+export const deliverySettingsApi = {
+  getAll: () => fetchApi<any>('/delivery-settings', { method: 'GET' }),
+  create: (data: any) => fetchApi<any>('/delivery-settings', { method: 'POST', body: JSON.stringify(data) }),
+};
+
+// --- Homepage Sections API Helper ---
+export const homepageSectionsApi = {
+  getAll: (params?: any) => fetchApi<any>('/homepage-sections', { method: 'GET', params }),
+  getById: (id: string) => fetchApi<any>(`/homepage-sections/${id}`, { method: 'GET' }),
+  create: (data: any) => fetchApi<any>('/homepage-sections', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: any) => fetchApi<any>(`/homepage-sections/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  delete: (id: string) => fetchApi<any>(`/homepage-sections/${id}`, { method: 'DELETE' }),
+  assignProducts: (id: string, productIds: string[]) => fetchApi<any>(`/homepage-sections/${id}/products`, { method: 'PUT', body: JSON.stringify({ productIds }) }),
+  reorder: (sectionIds: string[]) => fetchApi<any>('/homepage-sections/reorder', { method: 'PATCH', body: JSON.stringify({ sectionIds }) }),
+};
+
+// --- Homepage Banners API Helper ---
+export const homepageBannersApi = {
+  getAll: (params?: any) => fetchApi<any>('/homepage-banners', { method: 'GET', params }),
+  getById: (id: string) => fetchApi<any>(`/homepage-banners/${id}`, { method: 'GET' }),
+  create: (data: any) => fetchApi<any>('/homepage-banners', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: any) => fetchApi<any>(`/homepage-banners/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  delete: (id: string) => fetchApi<any>(`/homepage-banners/${id}`, { method: 'DELETE' }),
+  reorder: (bannerIds: string[]) => fetchApi<any>('/homepage-banners/reorder', { method: 'PATCH', body: JSON.stringify({ bannerIds }) }),
 };

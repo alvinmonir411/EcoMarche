@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getImageUrl } from '@/utils/image';
-import { FASTLAIN_PLACEHOLDER } from '@/utils/fashionImages';
+import { ECOMARCHE_PLACEHOLDER } from '@/utils/fashionImages';
 
 interface CategoryCardProps {
   name: string;
@@ -21,7 +21,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ name, image, href }) => {
           alt={name}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
-          onError={() => setImageSrc(FASTLAIN_PLACEHOLDER)}
+          onError={() => setImageSrc(ECOMARCHE_PLACEHOLDER)}
           className="object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110"
         />
       ) : (

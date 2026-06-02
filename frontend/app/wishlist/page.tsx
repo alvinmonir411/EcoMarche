@@ -45,7 +45,7 @@ export default function WishlistPage() {
               <ProductCard 
                 key={item.id} 
                 product={{
-                  id: Number(item.productId),
+                  id: item.productId,
                   name: item.name,
                   price: item.price,
                   imageUrl: item.image,

@@ -5,16 +5,17 @@ import Container from "@/components/ui/Container";
 import Link from "next/link";
 import Image from "next/image";
 import ProductCard from "@/components/product/ProductCard";
-import { productApi, categoryApi } from "@/services/api";
+import { productApi, categoryApi, homepageSectionsApi, homepageBannersApi } from "@/services/api";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 import { getImageUrl } from "@/utils/image";
 import {
-  FASTLAIN_PLACEHOLDER,
+  ECOMARCHE_PLACEHOLDER,
   bannerFashionImages,
   categoryFashionImages,
   getProductFallbackImage,
 } from "@/utils/fashionImages";
+
 
 const fallbackCategories = [
   { id: 1, name: "Women Dress", slug: "women-dress", image: categoryFashionImages["women-dress"] },
@@ -37,7 +38,7 @@ const testimonials = [
     avatar: "/images/avatar_female_1.png",
   },
   {
-    text: "FastLain makes everyday fashion feel polished without losing comfort. I keep coming back for basics.",
+    text: "EcoMarche makes everyday fashion feel polished without losing comfort. I keep coming back for basics.",
     author: "Anika Sen",
     role: "Member",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=160",
@@ -64,6 +65,7 @@ type HomeProduct = {
   discountPrice?: number;
   image?: string;
   imageUrl?: string;
+  thumbnail?: string;
   category?: string | { name?: string; slug?: string; id?: string | number };
   slug: string;
   sizes?: string[];
@@ -73,15 +75,10 @@ type HomeProduct = {
   stock?: number;
 };
 
-const productSections = [
-  { title: "All Women Dress", href: "/shop?category=women-dress", start: 0, count: 5 },
-  { title: "Premium Collection", href: "/shop", start: 5, count: 5 },
-  { title: "Seasonal Essentials", href: "/shop?category=winter-wear", start: 10, count: 5 },
-  { title: "Organic / Sustainable Certified", href: "/shop", start: 15, count: 5 },
-];
+
 
 function getProductImage(product: HomeProduct, index = 0) {
-  const explicitImage = product.imageUrl || product.image;
+  const explicitImage = product.thumbnail || product.imageUrl || product.image;
   const image = explicitImage && !explicitImage.includes("prod_")
     ? explicitImage
     : getProductFallbackImage(product.slug || product.id || `${product.name}-${index}`);
@@ -101,7 +98,18 @@ function FashionImage({
   sizes: string;
   priority?: boolean;
 }) {
-  const [imageSrc, setImageSrc] = useState(src || FASTLAIN_PLACEHOLDER);
+  const [imageSrc, setImageSrc] = useState(src || ECOMARCHE_PLACEHOLDER);
+
+  useEffect(() => {
+    setImageSrc(src || ECOMARCHE_PLACEHOLDER);
+  }, [src]);
+
+  const isUnsplash = imageSrc.includes("unsplash.com");
+  const baseFitClass = isUnsplash ? "object-cover" : "object-contain p-1 bg-white";
+  const restClasses = (className || "")
+    .replace(/\bobject-(cover|contain|fill|none|scale-down)\b/g, "")
+    .trim();
+  const finalClass = `${baseFitClass} ${restClasses}`.trim();
 
   return (
     <Image
@@ -111,16 +119,13 @@ function FashionImage({
       fill
       priority={priority}
       sizes={sizes}
-      onError={() => setImageSrc(FASTLAIN_PLACEHOLDER)}
-      className={className}
+      onError={() => setImageSrc(ECOMARCHE_PLACEHOLDER)}
+      className={finalClass}
     />
   );
 }
 
-function repeatSlice(products: HomeProduct[], start: number, count: number) {
-  if (products.length === 0) return [];
-  return Array.from({ length: Math.min(count, Math.max(products.length, count)) }, (_, index) => products[(start + index) % products.length]).slice(0, count);
-}
+
 
 function SectionHeader({ title, href }: { title: string; href?: string }) {
   return (
@@ -207,7 +212,7 @@ function ComboCard({ product, index }: { product: HomeProduct; index: number }) 
         <span className="absolute right-2 top-2 rounded-sm bg-primary px-2 py-1 text-[8px] font-black uppercase tracking-widest text-white">Save 15%</span>
       </div>
       <div className="space-y-2 p-3">
-        <h3 className="line-clamp-2 min-h-9 text-xs font-bold text-secondary">FastLain Combo {index + 1}</h3>
+        <h3 className="line-clamp-2 min-h-9 text-xs font-bold text-secondary">EcoMarche Combo {index + 1}</h3>
         <div className="flex items-baseline gap-2">
           <span className="text-sm font-black text-primary">${Number(product.discountPrice || product.price || 0).toFixed(2)}</span>
           <span className="text-[10px] font-bold text-gray-400 line-through">${(Number(product.price || 0) + 24).toFixed(2)}</span>
@@ -223,6 +228,8 @@ function ComboCard({ product, index }: { product: HomeProduct; index: number }) 
 export default function Home() {
   const [categories, setCategories] = useState<HomeCategory[]>([]);
   const [products, setProducts] = useState<HomeProduct[]>([]);
+  const [dbSections, setDbSections] = useState<any[]>([]);
+  const [dbBanners, setDbBanners] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeSlide, setActiveSlide] = useState(0);
   const categoryScroller = useRef<HTMLDivElement>(null);
@@ -230,7 +237,7 @@ export default function Home() {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
-  const slides = [
+  const localSlides = [
     {
       season: "EDITORIAL VOL. I",
       title: "The New Standard",
@@ -261,13 +268,60 @@ export default function Home() {
     },
   ];
 
+  const dbSlides = dbBanners
+    .filter((b) => b.type === "hero_slide" && b.enabled)
+    .map((slide) => ({
+      season: "SEASONAL FAVOURITES",
+      title: slide.title,
+      subtitle: slide.subtitle,
+      image: slide.imageUrl,
+      link: slide.link || "/shop",
+    }));
+
+  const slides = dbSlides.length > 0 ? dbSlides : localSlides;
+
+  const localPromos = [
+    { href: "/shop?category=accessories", image: bannerFashionImages.accessories, title: "Accessories Edit", eyebrow: "Accessories Collection" },
+    { href: "/shop?category=essentials", image: bannerFashionImages.essentials, title: "Denim & Essentials", eyebrow: "New Arrivals" },
+  ];
+
+  const dbPromos = dbBanners
+    .filter((b) => b.type === "promo_banner" && b.enabled)
+    .map((b) => ({
+      href: b.link || "/shop",
+      image: b.imageUrl,
+      title: b.title,
+      eyebrow: b.subtitle || "New Arrivals",
+    }));
+
+  const promos = dbPromos.length > 0 ? dbPromos : localPromos;
+
+  const localMiddle = {
+    title: "Soft Tailoring For Everyday Elegance",
+    subtitle: "Premium Drop",
+    image: bannerFashionImages.collection,
+    link: "/shop",
+  };
+
+  const dbMiddleBanner = dbBanners.find((b) => b.type === "middle_banner" && b.enabled);
+  const middleBanner = dbMiddleBanner
+    ? {
+        title: dbMiddleBanner.title,
+        subtitle: dbMiddleBanner.subtitle || "Premium Drop",
+        image: dbMiddleBanner.imageUrl,
+        link: dbMiddleBanner.link || "/shop",
+      }
+    : localMiddle;
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [catRes, prodRes] = await Promise.all([
+        const [catRes, prodRes, sectionsRes, bannersRes] = await Promise.all([
           categoryApi.getAll(),
           productApi.getAll({ limit: 24 }),
+          homepageSectionsApi.getAll(),
+          homepageBannersApi.getAll(),
         ]);
 
         if (catRes.success) {
@@ -277,10 +331,22 @@ export default function Home() {
 
         if (prodRes.success) {
           const prodData = prodRes.data;
-          setProducts((Array.isArray(prodData) ? prodData : (prodData?.data || prodData?.products || [])) as HomeProduct[]);
+          const nextProducts = (Array.isArray(prodData) ? prodData : (prodData?.data || prodData?.products || [])) as HomeProduct[];
+          setProducts(nextProducts);
+        } else {
+          setProducts([]);
+        }
+
+        if (sectionsRes.success) {
+          setDbSections(sectionsRes.data || []);
+        }
+
+        if (bannersRes.success) {
+          setDbBanners(bannersRes.data || []);
         }
       } catch (error) {
         console.error("Error fetching home data:", error);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -289,6 +355,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (slides.length <= 1) return;
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % slides.length);
     }, 6000);
@@ -326,9 +393,137 @@ export default function Home() {
       })
     : fallbackCategories;
 
-  const topSelling = repeatSlice(products, 0, 4);
-  const comboDeals = repeatSlice(products, 4, 5);
-  const justForYou = repeatSlice(products, 2, 10);
+  const sectionsToRender = dbSections;
+
+  // Preprocess sections to enforce global product uniqueness across all homepage sections
+  const globalSeenIds = new Set<any>();
+  const processedSections = sectionsToRender
+    .map((section) => {
+      const filteredSectionProducts = (section.sectionProducts || []).filter((sp: any) => {
+        if (!sp?.product?.id) return false;
+        if (globalSeenIds.has(sp.product.id)) {
+          return false;
+        }
+        globalSeenIds.add(sp.product.id);
+        return true;
+      });
+      return {
+        ...section,
+        sectionProducts: filteredSectionProducts,
+      };
+    })
+    .filter((section) => section.sectionProducts && section.sectionProducts.length > 0);
+
+  const renderTopSelling = (section: any) => {
+    const sectionProducts = section.sectionProducts?.map((sp: any) => sp.product) || [];
+    return (
+      <section key={section.id} className="py-4 md:py-7">
+        <Container className="max-w-[1320px]">
+          <SectionHeader title={section.title} href="/shop" />
+          <div className="grid gap-4 md:grid-cols-2">
+            {sectionProducts.map((product: any, index: number) => (
+              <TopSellingCard key={`${product.id}-top-${index}`} product={product} index={index} />
+            ))}
+          </div>
+        </Container>
+      </section>
+    );
+  };
+
+  const renderComboDeals = (section: any) => {
+    const sectionProducts = section.sectionProducts?.map((sp: any) => sp.product) || [];
+    return (
+      <section key={section.id} className="bg-[#efe8dc] py-6 md:py-8">
+        <Container className="max-w-[1320px]">
+          <div className="mb-4 flex items-center justify-between">
+            <SectionHeader title={section.title} />
+            <Link href="/shop" className="rounded-md bg-secondary px-4 py-2 text-[10px] font-black uppercase tracking-[0.1em] text-white hover:bg-primary">
+              View All Combos
+            </Link>
+          </div>
+          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-5 md:px-0">
+            {sectionProducts.map((product: any, index: number) => (
+              <ComboCard key={`${product.id}-combo-${index}`} product={product} index={index} />
+            ))}
+          </div>
+        </Container>
+      </section>
+    );
+  };
+
+  const renderJustForYou = (section: any) => {
+    const sectionProducts = section.sectionProducts?.map((sp: any) => sp.product) || [];
+    return (
+      <section key={section.id} className="py-5 md:py-8">
+        <Container className="max-w-[1320px]">
+          <SectionHeader title={section.title} href="/shop" />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
+            {sectionProducts.map((product: any, index: number) => (
+              <ProductCard key={`just-${product.id}-${index}`} product={product} />
+            ))}
+          </div>
+          <div className="mt-6 flex justify-center">
+            <Link href="/shop" className="rounded-full border border-primary px-7 py-3 text-[10px] font-black uppercase tracking-[0.14em] text-primary hover:bg-primary hover:text-white">
+              Load More
+            </Link>
+          </div>
+        </Container>
+      </section>
+    );
+  };
+
+  const renderStandardSection = (section: any) => {
+    const sectionProducts = section.sectionProducts?.map((sp: any) => sp.product) || [];
+    return (
+      <section key={section.id} className="py-5 md:py-8">
+        <Container className="max-w-[1320px]">
+          <SectionHeader title={section.title} href={`/shop?category=${section.slug}`} />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">
+            {sectionProducts.map((product: any, index: number) => (
+              <ProductCard key={`${section.title}-${product.id}-${index}`} product={product} />
+            ))}
+          </div>
+        </Container>
+      </section>
+    );
+  };
+
+  const BrandsSection = () => (
+    <section className="py-4 md:py-7">
+      <Container className="max-w-[1320px]">
+        <SectionHeader title="Our Brands" href="/shop" />
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
+          {brands.map((brand) => (
+            <div key={brand} className="flex h-16 items-center justify-center rounded-md border border-gray-100 bg-white text-lg font-black tracking-tight text-secondary shadow-sm">
+              {brand}
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 flex justify-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+          <span className="h-1.5 w-1.5 rounded-full bg-accent-dark" />
+        </div>
+      </Container>
+    </section>
+  );
+
+  const MiddleBannerSection = () => (
+    <section className="py-5 md:py-8">
+      <Container className="max-w-[1320px]">
+        <div className="relative h-56 overflow-hidden rounded-xl bg-secondary md:h-80">
+          <Image src={middleBanner.image} alt="EcoMarche premium fashion banner" fill sizes="100vw" className="object-cover" />
+          <div className="absolute inset-0 bg-black/45" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
+            <span className="mb-3 text-[10px] font-black uppercase tracking-[0.28em] text-white/75">{middleBanner.subtitle}</span>
+            <h2 className="max-w-2xl text-3xl font-black leading-tight text-white md:text-5xl">{middleBanner.title}</h2>
+            <Link href={middleBanner.link} className="mt-6 rounded-md bg-white px-7 py-3 text-[10px] font-black uppercase tracking-[0.16em] text-secondary hover:bg-primary hover:text-white">
+              Shop Collection
+            </Link>
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
 
   return (
     <div className="overflow-x-hidden bg-accent text-secondary selection:bg-primary selection:text-white">
@@ -369,11 +564,8 @@ export default function Home() {
             </div>
 
             <div className="hidden h-full grid-cols-1 gap-6 md:grid lg:col-span-4">
-              {[
-                { href: "/shop?category=accessories", image: bannerFashionImages.accessories, title: "Accessories Edit", eyebrow: "Accessories Collection" },
-                { href: "/shop?category=essentials", image: bannerFashionImages.essentials, title: "Denim & Essentials", eyebrow: "New Arrivals" },
-              ].map((promo) => (
-                <Link key={promo.href} href={promo.href} className="group relative block min-h-[250px] overflow-hidden rounded-2xl border border-gray-100 shadow-sm">
+              {promos.map((promo, index) => (
+                <Link key={`${promo.href}-${index}`} href={promo.href} className="group relative block min-h-[250px] overflow-hidden rounded-2xl border border-gray-100 shadow-sm">
                   <Image src={promo.image} alt={promo.title} fill sizes="(max-width: 1024px) 100vw, 33vw" className="object-cover transition-transform duration-[2.5s] ease-out group-hover:scale-105" />
                   <div className="absolute inset-0 bg-black/45 transition-colors group-hover:bg-black/55" />
                   <div className="absolute inset-0 z-10 flex flex-col justify-end p-6">
@@ -412,102 +604,45 @@ export default function Home() {
         </Container>
       </section>
 
-      <section className="py-4 md:py-7">
-        <Container className="max-w-[1320px]">
-          <SectionHeader title="Top Selling Products" href="/shop" />
-          <div className="grid gap-4 md:grid-cols-2">
-            {loading ? [1, 2, 3, 4].map((item) => <div key={item} className="h-44 animate-pulse rounded-md bg-white" />) : topSelling.map((product, index) => <TopSellingCard key={`${product.id}-top-${index}`} product={product} index={index} />)}
-          </div>
-        </Container>
-      </section>
-
-      <section className="py-4 md:py-7">
-        <Container className="max-w-[1320px]">
-          <SectionHeader title="Our Brands" href="/shop" />
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-5">
-            {brands.map((brand) => (
-              <div key={brand} className="flex h-16 items-center justify-center rounded-md border border-gray-100 bg-white text-lg font-black tracking-tight text-secondary shadow-sm">
-                {brand}
-              </div>
-            ))}
-          </div>
-          <div className="mt-3 flex justify-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            <span className="h-1.5 w-1.5 rounded-full bg-accent-dark" />
-          </div>
-        </Container>
-      </section>
-
-      {productSections.slice(0, 1).map((section) => (
-        <section key={section.title} className="py-4 md:py-7">
+      {loading && products.length === 0 ? (
+        <section className="py-5 md:py-8">
           <Container className="max-w-[1320px]">
-            <SectionHeader title={section.title} href={section.href} />
+            <div className="h-8 w-48 animate-pulse rounded bg-gray-200 mb-6" />
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:grid-cols-5">
-              {repeatSlice(products, section.start, section.count).map((product, index) => <ProductCard key={`${section.title}-${product.id}-${index}`} product={product} />)}
+              {[1, 2, 3, 4, 5].map((item) => (
+                <div key={item} className="h-64 animate-pulse rounded-md bg-gray-200" />
+              ))}
             </div>
           </Container>
         </section>
-      ))}
+      ) : (
+        processedSections.map((section, index) => {
+          const sectionProducts = section.sectionProducts?.map((sp: any) => sp.product) || [];
+          if (sectionProducts.length === 0) return null;
 
-      <section className="bg-[#efe8dc] py-6 md:py-8">
-        <Container className="max-w-[1320px]">
-          <div className="mb-4 flex items-center justify-between">
-            <SectionHeader title="Exclusive Combo Deals" />
-            <Link href="/shop" className="rounded-md bg-secondary px-4 py-2 text-[10px] font-black uppercase tracking-[0.1em] text-white hover:bg-primary">View All Combos</Link>
-          </div>
-          <div className="-mx-4 flex gap-3 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-5 md:px-0">
-            {comboDeals.map((product, index) => <ComboCard key={`${product.id}-combo-${index}`} product={product} index={index} />)}
-          </div>
-        </Container>
-      </section>
+          const renderResult = [];
 
-      {productSections.slice(1, 2).map((section) => (
-        <section key={section.title} className="py-5 md:py-8">
-          <Container className="max-w-[1320px]">
-            <SectionHeader title={section.title} href={section.href} />
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:grid-cols-5">
-              {repeatSlice(products, section.start, section.count).map((product, index) => <ProductCard key={`${section.title}-${product.id}-${index}`} product={product} />)}
-            </div>
-          </Container>
-        </section>
-      ))}
+          if (section.slug === "top-selling-products") {
+            renderResult.push(renderTopSelling(section));
+          } else if (section.slug === "exclusive-combo-deals") {
+            renderResult.push(renderComboDeals(section));
+          } else if (section.slug === "just-for-you") {
+            renderResult.push(renderJustForYou(section));
+          } else {
+            renderResult.push(renderStandardSection(section));
+          }
 
-      <section className="py-5 md:py-8">
-        <Container className="max-w-[1320px]">
-          <div className="relative h-56 overflow-hidden rounded-xl bg-secondary md:h-80">
-            <Image src={bannerFashionImages.collection} alt="FastLain premium fashion banner" fill sizes="100vw" className="object-cover" />
-            <div className="absolute inset-0 bg-black/45" />
-            <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center">
-              <span className="mb-3 text-[10px] font-black uppercase tracking-[0.28em] text-white/75">Premium Drop</span>
-              <h2 className="max-w-2xl text-3xl font-black leading-tight text-white md:text-5xl">Soft Tailoring For Everyday Elegance</h2>
-              <Link href="/shop" className="mt-6 rounded-md bg-white px-7 py-3 text-[10px] font-black uppercase tracking-[0.16em] text-secondary hover:bg-primary hover:text-white">Shop Collection</Link>
-            </div>
-          </div>
-        </Container>
-      </section>
+          if (index === 0) {
+            renderResult.push(<BrandsSection key="brands-section" />);
+          }
 
-      {productSections.slice(2).map((section) => (
-        <section key={section.title} className="py-5 md:py-8">
-          <Container className="max-w-[1320px]">
-            <SectionHeader title={section.title} href={section.href} />
-            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:grid-cols-5">
-              {repeatSlice(products, section.start, section.count).map((product, index) => <ProductCard key={`${section.title}-${product.id}-${index}`} product={product} />)}
-            </div>
-          </Container>
-        </section>
-      ))}
+          if (index === 1 || (processedSections.length < 2 && index === processedSections.length - 1)) {
+            renderResult.push(<MiddleBannerSection key="middle-banner-section" />);
+          }
 
-      <section className="py-5 md:py-8">
-        <Container className="max-w-[1320px]">
-          <SectionHeader title="Just For You" href="/shop" />
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-5 lg:grid-cols-5">
-            {justForYou.map((product, index) => <ProductCard key={`just-${product.id}-${index}`} product={product} />)}
-          </div>
-          <div className="mt-6 flex justify-center">
-            <Link href="/shop" className="rounded-full border border-primary px-7 py-3 text-[10px] font-black uppercase tracking-[0.14em] text-primary hover:bg-primary hover:text-white">Load More</Link>
-          </div>
-        </Container>
-      </section>
+          return renderResult;
+        })
+      )}
 
       <section className="py-6 md:py-10">
         <Container className="max-w-[1320px]">

@@ -11,14 +11,14 @@ const Footer = () => {
           <div className="lg:col-span-2 space-y-8">
             <Link href="/" className="flex items-center gap-3">
               <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white text-lg font-black">E</div>
-              <span className="text-xl font-black text-secondary tracking-tighter">FastLain</span>
+              <span className="text-xl font-black text-secondary tracking-tighter">EcoMarche</span>
             </Link>
             <p className="max-w-sm text-sm leading-relaxed text-muted">
-              FastLain is a premium fashion marketplace for everyday dresses, curated essentials, and responsibly made wardrobe staples.
+              EcoMarche is a premium fashion marketplace for everyday dresses, curated essentials, and responsibly made wardrobe staples.
             </p>
             <div className="space-y-2 text-sm text-muted">
               <p>Rampura, Dhaka, Bangladesh</p>
-              <p>support@fastlain.com</p>
+              <p>support@ecomarche.com</p>
               <p>+880 9642 292922</p>
             </div>
             <div className="flex gap-3">
@@ -79,27 +79,27 @@ const Footer = () => {
           <div>
             <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-secondary">Support</h3>
             <ul className="space-y-4 text-sm text-muted">
-              <li><Link href="/shipping" className="hover:text-primary transition-colors">Shipping & Returns</Link></li>
+              <li><Link href="/return-policy" className="hover:text-primary transition-colors">Shipping & Returns</Link></li>
               <li><Link href="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
-              <li><Link href="/dashboard/orders" className="hover:text-primary transition-colors">Track Order</Link></li>
+              <li><Link href="/order-tracking" className="hover:text-primary transition-colors">Track Order</Link></li>
             </ul>
           </div>
 
           <div>
             <h3 className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-secondary">Policy</h3>
             <ul className="space-y-4 text-sm text-muted">
-              <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
-              <li><Link href="/returns" className="hover:text-primary transition-colors">Return Policy</Link></li>
-              <li><Link href="/cancellation" className="hover:text-primary transition-colors">Cancellation</Link></li>
+              <li><Link href="/return-policy" className="hover:text-primary transition-colors">Return Policy</Link></li>
+              <li><Link href="/faq" className="hover:text-primary transition-colors">Cancellation</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="mt-10 flex flex-col items-center justify-between gap-6 border-t border-gray-100 pt-8 md:flex-row">
           <div className="text-[10px] font-bold text-muted uppercase tracking-widest">
-            © 2026 FastLain. Naturally Yours.
+            © 2026 EcoMarche. Naturally Yours.
           </div>
           <div className="flex gap-8">
              <div className="h-6 w-10 bg-gray-50 rounded flex items-center justify-center opacity-50"><span className="text-[8px] font-bold">VISA</span></div>

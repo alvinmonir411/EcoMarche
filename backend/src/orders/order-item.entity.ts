@@ -32,8 +32,8 @@ export class OrderItem {
   @ManyToOne(() => Order, (order) => order.items, { onDelete: "CASCADE" })
   order: Order;
 
-  @ManyToOne(() => Product, (product) => product.orderItems)
-  product: Product;
+  @ManyToOne(() => Product, (product) => product.orderItems, { onDelete: "SET NULL", nullable: true })
+  product: Product | null;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -36,11 +36,11 @@ export class Product {
   @Column()
   stock: number;
 
-  @Column()
-  size: string;
+  @Column("simple-array", { nullable: true })
+  sizes: string[];
 
-  @Column()
-  color: string;
+  @Column("simple-array", { nullable: true })
+  colors: string[];
 
   @Column()
   thumbnail: string;

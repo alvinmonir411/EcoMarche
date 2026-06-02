@@ -25,6 +25,13 @@ export default function AdminProductCreatePage() {
     size: "S, M, L, XL",
     color: "Black",
     categoryId: "",
+    featured: false,
+    flashSale: false,
+    newArrival: false,
+    trending: false,
+    bestSelling: false,
+    justForYou: false,
+    active: true,
   });
 
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
@@ -98,11 +105,18 @@ export default function AdminProductCreatePage() {
         price: Number(formData.price),
         discountPrice: formData.discountPrice ? Number(formData.discountPrice) : undefined,
         stock: Number(formData.stock),
-        size: formData.size,
-        color: formData.color,
+        sizes: formData.size.split(",").map((s: string) => s.trim()).filter(Boolean),
+        colors: formData.color.split(",").map((c: string) => c.trim()).filter(Boolean),
         categoryId: formData.categoryId,
         thumbnail: thumbnailUrl,
         imageUrls: imageUrls,
+        featured: formData.featured,
+        flashSale: formData.flashSale,
+        newArrival: formData.newArrival,
+        trending: formData.trending,
+        bestSelling: formData.bestSelling,
+        justForYou: formData.justForYou,
+        active: formData.active,
       };
 
       const res = await productApi.create(productPayload);
@@ -178,60 +192,160 @@ export default function AdminProductCreatePage() {
                   <Input label="Initial Stock" name="stock" type="number" value={formData.stock} onChange={handleInputChange} required placeholder="50" />
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Visibility</label>
-                    <select className="w-full bg-accent/5 border border-accent/20 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-primary transition-all">
-                      <option>Published</option>
-                      <option>Draft</option>
-                      <option>Hidden</option>
+                    <select 
+                      name="active" 
+                      value={formData.active ? "true" : "false"} 
+                      onChange={(e) => setFormData(prev => ({ ...prev, active: e.target.value === "true" }))}
+                      className="w-full bg-accent/5 border border-accent/20 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-primary transition-all font-bold text-secondary"
+                    >
+                      <option value="true">Published</option>
+                      <option value="false">Draft / Inactive</option>
                     </select>
                   </div>
                   <Input label="Available Sizes (comma separated)" name="size" value={formData.size} onChange={handleInputChange} required placeholder="S, M, L" />
                   <Input label="Available Colors (comma separated)" name="color" value={formData.color} onChange={handleInputChange} required placeholder="Black, White" />
+                  
+                  <div className="md:col-span-2 border-t border-accent/10 pt-6 mt-4">
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 block">Homepage & Listing Flags</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                      {[
+                        { key: "featured", label: "Featured" },
+                        { key: "flashSale", label: "Flash Sale" },
+                        { key: "newArrival", label: "New Arrival" },
+                        { key: "trending", label: "Trending" },
+                        { key: "bestSelling", label: "Best Selling" },
+                        { key: "justForYou", label: "Just For You" },
+                      ].map(({ key, label }) => (
+                        <label key={key} className="flex items-center gap-3 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            name={key}
+                            checked={!!(formData as any)[key]}
+                            onChange={(e) => setFormData(prev => ({ ...prev, [key]: e.target.checked }))}
+                            className="w-5 h-5 rounded-md border-accent/30 text-primary focus:ring-primary accent-primary cursor-pointer"
+                          />
+                          <span className="text-sm font-bold text-secondary group-hover:text-primary transition-colors">{label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Media */}
               <div className="bg-white p-10 rounded-[32px] shadow-sm border border-accent/20">
                 <h3 className="text-xl font-bold text-secondary mb-8 pb-4 border-b border-accent/10">Media</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   
                   {/* Thumbnail Upload */}
                   <div>
-                     <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 block">Thumbnail Image (Required)</label>
-                     <div onClick={() => thumbnailInputRef.current?.click()} className="h-48 border-2 border-dashed border-accent/20 rounded-[32px] p-6 flex flex-col items-center justify-center bg-accent/5 hover:bg-white hover:border-primary/50 transition-all group cursor-pointer relative overflow-hidden">
-                       <input type="file" accept="image/*" className="hidden" ref={thumbnailInputRef} onChange={(e) => { if(e.target.files?.[0]) setThumbnailFile(e.target.files[0]) }} />
-                       {thumbnailFile ? (
-                         <img src={URL.createObjectURL(thumbnailFile)} alt="Thumbnail" className="absolute inset-0 w-full h-full object-contain bg-white" />
-                       ) : (
-                         <>
-                           <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-gray-400 group-hover:text-primary transition-all mb-3 shadow-sm">
-                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-                           </div>
-                           <span className="text-xs font-bold text-gray-400 uppercase tracking-widest group-hover:text-primary text-center">Click to Upload<br/>Thumbnail</span>
-                         </>
-                       )}
-                     </div>
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 block">Thumbnail Image (Required)</label>
+                    {thumbnailFile ? (
+                      <div className="relative h-48 border-2 border-accent/20 rounded-[32px] overflow-hidden group bg-white shadow-sm flex items-center justify-center p-2">
+                        <img 
+                          src={URL.createObjectURL(thumbnailFile)} 
+                          alt="Thumbnail" 
+                          className="w-full h-full object-contain" 
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            setThumbnailFile(null);
+                          }}
+                          className="absolute top-3 right-3 p-2 bg-white/95 backdrop-blur-md rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm z-10"
+                          title="Remove thumbnail"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    ) : (
+                      <div 
+                        onClick={() => thumbnailInputRef.current?.click()} 
+                        className="h-48 border-2 border-dashed border-accent/20 rounded-[32px] p-6 flex flex-col items-center justify-center bg-accent/5 hover:bg-white hover:border-primary/50 transition-all group cursor-pointer relative overflow-hidden"
+                      >
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="hidden" 
+                          ref={thumbnailInputRef} 
+                          onChange={(e) => { if(e.target.files?.[0]) setThumbnailFile(e.target.files[0]) }} 
+                        />
+                        <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-gray-400 group-hover:text-primary transition-all mb-3 shadow-sm">
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                        </div>
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest group-hover:text-primary text-center">Click to Upload<br/>Thumbnail</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Gallery Upload */}
                   <div>
-                     <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 block">Gallery Images (Optional)</label>
-                     <div onClick={() => galleryInputRef.current?.click()} className="h-48 border-2 border-dashed border-accent/20 rounded-[32px] p-6 flex flex-col items-center justify-center bg-accent/5 hover:bg-white hover:border-primary/50 transition-all group cursor-pointer relative overflow-hidden">
-                       <input type="file" accept="image/*" multiple className="hidden" ref={galleryInputRef} onChange={(e) => { if(e.target.files) setGalleryFiles(Array.from(e.target.files)) }} />
-                       {galleryFiles.length > 0 ? (
-                         <div className="absolute inset-0 bg-white grid grid-cols-2 gap-2 p-2 overflow-y-auto">
-                            {galleryFiles.map((file, i) => (
-                               <img key={i} src={URL.createObjectURL(file)} alt="Gallery" className="w-full h-20 object-cover rounded-xl border border-gray-100" />
-                            ))}
-                         </div>
-                       ) : (
-                         <>
-                           <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-gray-400 group-hover:text-primary transition-all mb-3 shadow-sm">
-                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                           </div>
-                           <span className="text-xs font-bold text-gray-400 uppercase tracking-widest group-hover:text-primary text-center">Click to Upload<br/>Multiple Images</span>
-                         </>
-                       )}
-                     </div>
+                    <label className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 block">Gallery Images (Optional)</label>
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Upload Trigger Card */}
+                      <div 
+                        onClick={() => galleryInputRef.current?.click()} 
+                        className="h-48 border-2 border-dashed border-accent/20 rounded-[32px] p-4 flex flex-col items-center justify-center bg-accent/5 hover:bg-white hover:border-primary/50 transition-all group cursor-pointer relative overflow-hidden"
+                      >
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          multiple 
+                          className="hidden" 
+                          ref={galleryInputRef} 
+                          onChange={(e) => { 
+                            if(e.target.files) {
+                              setGalleryFiles(prev => [...prev, ...Array.from(e.target.files!)]);
+                            } 
+                          }} 
+                        />
+                        <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center text-gray-400 group-hover:text-primary transition-all mb-2 shadow-sm">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                          </svg>
+                        </div>
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-primary text-center">Add Gallery<br/>Images</span>
+                      </div>
+
+                      {/* Preview Container */}
+                      <div className="h-48 border border-accent/10 rounded-[32px] p-4 overflow-y-auto bg-accent/5 grid grid-cols-2 gap-2">
+                        {galleryFiles.length > 0 ? (
+                          galleryFiles.map((file, i) => (
+                            <div key={i} className="relative aspect-square rounded-xl overflow-hidden group bg-white shadow-sm flex items-center justify-center p-1 border border-gray-100">
+                              <img 
+                                src={URL.createObjectURL(file)} 
+                                alt="Gallery preview" 
+                                className="w-full h-full object-contain" 
+                              />
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  setGalleryFiles(prev => prev.filter((_, idx) => idx !== i));
+                                }}
+                                className="absolute top-1 right-1 p-1 bg-white/95 rounded-lg text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm opacity-0 group-hover:opacity-100 z-10"
+                                title="Remove image"
+                              >
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              </button>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="col-span-2 h-full flex items-center justify-center text-center">
+                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">No gallery images</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
                 </div>

@@ -14,6 +14,8 @@ import { ProductsModule } from "./products/products.module";
 import { UsersModule } from "./users/users.module";
 import { WishlistsModule } from "./wishlists/wishlists.module";
 import { ReviewsModule } from "./reviews/reviews.module";
+import { HomepageSectionsModule } from "./homepage-sections/homepage-sections.module";
+import { HomepageBannersModule } from "./homepage-banners/homepage-banners.module";
 
 @Module({
   imports: [
@@ -45,6 +47,8 @@ import { ReviewsModule } from "./reviews/reviews.module";
     PaymentsModule,
     AdminModule,
     ReviewsModule,
+    HomepageSectionsModule,
+    HomepageBannersModule,
   ],
 })
 export class AppModule {}

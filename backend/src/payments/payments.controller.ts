@@ -28,6 +28,13 @@ export class PaymentsController {
     return this.paymentsService.create(createPaymentDto);
   }
 
+  @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
+  findAll() {
+    return this.paymentsService.findAll();
+  }
+
   @Get("order/:orderId")
   @UseGuards(JwtAuthGuard)
   findByOrderId(

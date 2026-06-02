@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { CartProvider } from "@/context/CartContext";
 import { WishlistProvider } from "@/context/WishlistContext";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "FastLain | Naturally Yours",
-  description: "Shop premium dresses, clothing, and modern sustainable fashion at FastLain.",
+  title: "EcoMarche | Naturally Yours",
+  description: "Shop premium dresses, clothing, and modern sustainable fashion at EcoMarche.",
 };
 
 export default function RootLayout({
@@ -20,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className} suppressHydrationWarning>
+      <body className="font-sans" suppressHydrationWarning>
         <CartProvider>
           <WishlistProvider>
           <Navbar />

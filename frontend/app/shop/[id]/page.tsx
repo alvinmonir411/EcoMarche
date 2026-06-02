@@ -100,7 +100,7 @@ export default function ShopProductDetailsPage() {
               </div>
               <div className="bg-accent/5 p-4 rounded-2xl border border-accent/10">
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Standard Size</p>
-                <p className="font-bold text-secondary">{product.size || product.sizes?.[0] || 'M'}</p>
+                <p className="font-bold text-secondary">{product.sizes?.[0] || 'M'}</p>
               </div>
             </div>
 
@@ -113,8 +113,8 @@ export default function ShopProductDetailsPage() {
                 name: product.name,
                 price: Number(product.price),
                 image: getImageUrl(product.imageUrl || product.images?.[0] || getProductFallbackImage(product.slug || product.id || product.name)),
-                size: product.size || product.sizes?.[0] || "M",
-                color: product.color || product.colors?.[0] || "Default",
+                size: product.sizes?.[0] || "M",
+                color: product.colors?.[0] || "Default",
                 quantity: 1
               })}
             >

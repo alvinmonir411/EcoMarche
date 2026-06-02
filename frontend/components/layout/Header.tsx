@@ -7,7 +7,7 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-4 py-3">
         <div className="flex items-center justify-between gap-3">
           <Link href="/" className="text-xl font-bold text-stone-950">
-            FastLain
+            EcoMarche
           </Link>
 
           <div className="hidden md:block">

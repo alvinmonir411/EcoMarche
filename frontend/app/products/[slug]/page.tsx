@@ -12,7 +12,7 @@ import { productApi, reviewApi } from "@/services/api";
 import { useCart } from "@/context/CartContext";
 import toast from "react-hot-toast";
 import { getImageUrl } from "@/utils/image";
-import { FASTLAIN_PLACEHOLDER, getProductFallbackImage } from "@/utils/fashionImages";
+import { ECOMARCHE_PLACEHOLDER, getProductFallbackImage } from "@/utils/fashionImages";
 
 export default function ProductDetailsPage() {
   const params = useParams();
@@ -182,22 +182,36 @@ export default function ProductDetailsPage() {
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
-                onError={() => setSelectedImage(FASTLAIN_PLACEHOLDER)}
-                className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                onError={() => setSelectedImage(ECOMARCHE_PLACEHOLDER)}
+                className={`${
+                  activeImage.includes('unsplash.com') 
+                    ? 'object-cover' 
+                    : 'object-contain p-4 bg-white border border-gray-100'
+                } object-center group-hover:scale-105 transition-transform duration-700`}
               />
             </div>
             {product.images && product.images.length > 1 && (
               <div className="grid grid-cols-4 gap-4">
-                {product.images.map((img: any, i: number) => (
-                  <button
-                    type="button"
-                    key={i}
-                    onClick={() => setSelectedImage(getImageUrl(img.imageUrl || img))}
-                    className="relative aspect-square bg-accent/20 rounded-xl overflow-hidden cursor-pointer ring-2 ring-transparent hover:ring-primary transition-all"
-                  >
-                    <Image src={getImageUrl(img.imageUrl || img)} alt={`${product.name} thumbnail ${i + 1}`} fill sizes="120px" className="object-cover" />
-                  </button>
-                ))}
+                {product.images.map((img: any, i: number) => {
+                  const imgUrl = getImageUrl(img.imageUrl || img);
+                  const isImgUnsplash = imgUrl.includes('unsplash.com');
+                  return (
+                    <button
+                      type="button"
+                      key={i}
+                      onClick={() => setSelectedImage(imgUrl)}
+                      className="relative aspect-square bg-accent/20 rounded-xl overflow-hidden cursor-pointer ring-2 ring-transparent hover:ring-primary transition-all"
+                    >
+                      <Image 
+                        src={imgUrl} 
+                        alt={`${product.name} thumbnail ${i + 1}`} 
+                        fill 
+                        sizes="120px" 
+                        className={isImgUnsplash ? 'object-cover' : 'object-contain p-1 bg-white'} 
+                      />
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>

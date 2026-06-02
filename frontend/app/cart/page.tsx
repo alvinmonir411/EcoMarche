@@ -8,7 +8,7 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { couponApi } from "@/services/api";
 import { getImageUrl } from "@/utils/image";
-import { FASTLAIN_PLACEHOLDER } from "@/utils/fashionImages";
+import { ECOMARCHE_PLACEHOLDER } from "@/utils/fashionImages";
 
 function CartLineImage({ src, alt }: { src?: string; alt: string }) {
   const [imageSrc, setImageSrc] = useState(getImageUrl(src));
@@ -19,7 +19,7 @@ function CartLineImage({ src, alt }: { src?: string; alt: string }) {
       alt={alt}
       fill
       sizes="160px"
-      onError={() => setImageSrc(FASTLAIN_PLACEHOLDER)}
+      onError={() => setImageSrc(ECOMARCHE_PLACEHOLDER)}
       className="object-cover transition-transform duration-[2s] group-hover:scale-105"
     />
   );

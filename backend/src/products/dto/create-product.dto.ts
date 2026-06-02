@@ -39,11 +39,13 @@ export class CreateProductDto {
   @Min(0)
   stock: number;
 
-  @IsString()
-  size: string;
+  @IsArray()
+  @IsString({ each: true })
+  sizes: string[];
 
-  @IsString()
-  color: string;
+  @IsArray()
+  @IsString({ each: true })
+  colors: string[];
 
   @IsString()
   thumbnail: string;

@@ -60,9 +60,9 @@ export default function RegisterPage() {
           <div className="md:w-1/2 bg-secondary p-12 text-white relative overflow-hidden hidden md:flex flex-col justify-between">
             <div className="absolute top-0 left-0 -ml-20 -mt-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
             <div className="absolute bottom-0 right-0 -mr-20 -mb-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
-            
+
             <div className="relative z-10">
-              <Link href="/" className="text-3xl font-bold tracking-tighter">FastLain</Link>
+              <Link href="/" className="text-3xl font-bold tracking-tighter">EcoMarche</Link>
               <h2 className="text-5xl font-bold mt-20 leading-tight">Join the <br /> fashion revolution.</h2>
               <p className="mt-6 text-gray-400 text-lg leading-relaxed max-w-sm">
                 Create an account today and get 10% off your first order. Be the first to know about our eco-friendly drops.
@@ -70,7 +70,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="relative z-10 text-sm font-medium text-gray-600">
-              © 2026 FastLain. Naturally Yours.
+              © 2026 EcoMarche. Naturally Yours.
             </div>
           </div>
 
@@ -95,51 +95,51 @@ export default function RegisterPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <Input 
-                  label="First Name" 
-                  name="firstName" 
-                  placeholder="John" 
-                  value={formData.firstName} 
-                  onChange={handleChange} 
-                  required 
+                <Input
+                  label="First Name"
+                  name="firstName"
+                  placeholder="John"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
                 />
-                <Input 
-                  label="Last Name" 
-                  name="lastName" 
-                  placeholder="Doe" 
-                  value={formData.lastName} 
-                  onChange={handleChange} 
-                  required 
+                <Input
+                  label="Last Name"
+                  name="lastName"
+                  placeholder="Doe"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
                 />
               </div>
-              <Input 
-                label="Email Address" 
-                name="email" 
-                type="email" 
-                placeholder="name@example.com" 
-                value={formData.email} 
-                onChange={handleChange} 
-                required 
+              <Input
+                label="Email Address"
+                name="email"
+                type="email"
+                placeholder="name@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
               />
-              <Input 
-                label="Password" 
-                name="password" 
-                type="password" 
-                placeholder="••••••••" 
-                value={formData.password} 
-                onChange={handleChange} 
-                required 
+              <Input
+                label="Password"
+                name="password"
+                type="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                required
               />
-              
+
               <div className="py-2">
                 <p className="text-xs text-gray-500 leading-relaxed">
                   By clicking &quot;Create Account&quot;, you agree to our <Link href="#" className="text-primary font-bold hover:underline">Terms of Service</Link> and <Link href="#" className="text-primary font-bold hover:underline">Privacy Policy</Link>.
                 </p>
               </div>
 
-              <Button 
-                type="submit" 
-                size="lg" 
+              <Button
+                type="submit"
+                size="lg"
                 className="w-full py-5 text-lg font-bold shadow-xl shadow-primary/20"
                 disabled={loading || success}
               >

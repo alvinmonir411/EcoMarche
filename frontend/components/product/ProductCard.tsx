@@ -1,20 +1,22 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { getImageUrl } from '@/utils/image';
-import { FASTLAIN_PLACEHOLDER, getProductFallbackImage } from '@/utils/fashionImages';
+import { ECOMARCHE_PLACEHOLDER, getProductFallbackImage } from '@/utils/fashionImages';
 
 interface Product {
-  id: number;
+  id: string | number;
   name: string;
   price: number;
   discountPrice?: number;
   image?: string;
   imageUrl?: string;
+  thumbnail?: string;
+  images?: Array<{ id: string | number; imageUrl: string }>;
   category?: string | { name?: string; slug?: string; id?: string | number };
   slug: string;
   sizes?: string[];
@@ -33,8 +35,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
   const isFavorite = isInWishlist(product.id);
-
   const isOutOfStock = product.stock !== undefined && product.stock <= 0;
+
+  const getProductImage = () => {
+    const explicitImage = product.thumbnail || product.imageUrl || product.image;
+    if (explicitImage && !explicitImage.includes("prod_")) return explicitImage;
+    return getProductFallbackImage(product.slug || product.id || product.name);
+  };
+
+  const displayImage = getImageUrl(getProductImage());
+  const [imageSrc, setImageSrc] = useState(displayImage);
+
+  // Sync image source if product image changes dynamically
+  useEffect(() => {
+    setImageSrc(displayImage);
+  }, [displayImage]);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -45,7 +60,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       id: product.id,
       name: product.name,
       price: Number(product.price || 0),
-      image: getImageUrl(getProductImage()),
+      image: imageSrc,
       size: product.sizes?.[0] || "M",
       color: product.colors?.[0] || "Default",
       quantity: 1
@@ -62,27 +77,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
   };
 
-  const getProductImage = () => {
-    const explicitImage = product.imageUrl || product.image;
-    if (explicitImage && !explicitImage.includes("prod_")) return explicitImage;
-    return getProductFallbackImage(product.slug || product.id || product.name);
-  };
-
-  const displayImage = getImageUrl(getProductImage());
-  const [imageSrc, setImageSrc] = useState(displayImage);
   const discountPercent = product.discountPrice ? Math.round(((product.price - product.discountPrice) / product.price) * 100) : 0;
+  const isUnsplash = imageSrc.includes('unsplash.com');
 
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white text-secondary transition-all duration-300 hover:border-gray-300 hover:shadow-[0_14px_35px_rgba(0,0,0,0.08)]">
-      <Link href={`/products/${product.slug}`} className="relative block aspect-[4/5] overflow-hidden bg-[#f7f7f4] md:aspect-[3/4]">
+      <Link href={`/products/${product.slug}`} className="relative block aspect-[4/5] w-full overflow-hidden bg-[#f7f7f4]">
         {displayImage ? (
           <Image
             src={imageSrc}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
-            onError={() => setImageSrc(FASTLAIN_PLACEHOLDER)}
-            className={`object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.03] ${isOutOfStock ? 'opacity-70 grayscale-[8%]' : ''}`}
+            onError={() => setImageSrc(ECOMARCHE_PLACEHOLDER)}
+            className={`${
+              isUnsplash 
+                ? 'object-cover' 
+                : 'object-contain p-2 bg-white'
+            } object-center transition-transform duration-700 ease-out group-hover:scale-[1.03] ${isOutOfStock ? 'opacity-70 grayscale-[8%]' : ''}`}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gray-50 text-[10px] font-bold uppercase tracking-widest text-gray-300">
@@ -90,16 +102,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
         )}
 
+        {/* Discount Badge on the top-left */}
         {!isOutOfStock && discountPercent > 0 && (
-          <div className="absolute right-2 top-2 z-10 md:right-3 md:top-3">
+          <div className="absolute left-2 top-2 z-10 md:left-3 md:top-3">
             <span className="rounded-sm bg-primary px-2 py-1 text-[8px] font-black uppercase tracking-[0.08em] text-white md:text-[9px]">
               Save {discountPercent}%
             </span>
           </div>
         )}
 
-        {/* Favorite/Wishlist Button */}
-        <div className="absolute left-2 top-2 z-20 md:left-3 md:top-3">
+        {/* Favorite/Wishlist Button on the top-right */}
+        <div className="absolute right-2 top-2 z-20 md:right-3 md:top-3">
           <button 
             onClick={handleWishlist}
             className={`flex h-7 w-7 items-center justify-center rounded-full border shadow-sm transition-all duration-300 hover:scale-105 md:h-8 md:w-8 ${

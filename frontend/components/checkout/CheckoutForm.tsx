@@ -176,7 +176,7 @@ export function CheckoutForm() {
                 Cash on Delivery
               </span>
               <span className="mt-1 block text-sm leading-6 text-stone-600">
-                Pay with cash when your FastLain order arrives.
+                Pay with cash when your EcoMarche order arrives.
               </span>
             </span>
           </label>

@@ -1,6 +1,6 @@
-# FastLain Frontend Setup
+# EcoMarche Frontend Setup
 
-Next.js 16.2 frontend for the FastLain premium fashion e-commerce website.
+Next.js 16.2 frontend for the EcoMarche premium fashion e-commerce website.
 
 ## 1. Installation Commands
 

@@ -87,8 +87,8 @@ export class OrdersService {
             quantity: item.quantity,
             productName: item.product.name,
             price: this.getProductPrice(item.product),
-            size: item.size ?? item.product.size,
-            color: item.color ?? item.product.color,
+            size: item.size ?? item.product.sizes?.[0] ?? "",
+            color: item.color ?? item.product.colors?.[0] ?? "",
             product: { id: item.product.id } as Product,
           }),
         ),
@@ -114,7 +114,12 @@ export class OrdersService {
         );
       }
 
-      await manager.delete(CartItem, { cart: { id: cart.id } });
+      await manager
+        .createQueryBuilder()
+        .delete()
+        .from(CartItem)
+        .where("cartId = :cartId", { cartId: cart.id })
+        .execute();
 
       const orderDetails = await manager.findOne(Order, {
         where: { id: savedOrder.id },

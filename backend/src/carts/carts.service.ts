@@ -119,7 +119,11 @@ export class CartsService {
 
   async clearCart(userId: string) {
     const cart = await this.getCartByUserId(userId);
-    await this.cartItemsRepository.delete({ cart: { id: cart.id } });
+    await this.cartItemsRepository
+      .createQueryBuilder()
+      .delete()
+      .where("cartId = :cartId", { cartId: cart.id })
+      .execute();
     return this.getCartByUserId(userId);
   }
 

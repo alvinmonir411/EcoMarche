@@ -99,6 +99,8 @@ export default function AdminOrderDetailsPage() {
     );
   }
 
+  const placedAt = order.createdAt ? new Date(order.createdAt).toLocaleString() : "Not available";
+
   return (
     <div className="min-h-screen bg-[#f8f8f5] pb-20 print:bg-white print:pb-0">
       
@@ -125,7 +127,7 @@ export default function AdminOrderDetailsPage() {
               </Link>
             </div>
             <h1 className="text-3xl font-black text-secondary tracking-tighter">Order #{order.id?.toString().slice(-6) || order.id}</h1>
-            <p className="text-sm font-bold text-gray-400 mt-2 uppercase tracking-widest">Placed on {new Date(order.createdAt || Date.now()).toLocaleString()}</p>
+            <p className="text-sm font-bold text-gray-400 mt-2 uppercase tracking-widest">Placed on {placedAt}</p>
           </div>
           <div className="flex items-center gap-4 flex-wrap">
              <button onClick={() => window.print()} className="print:hidden px-6 py-3 bg-white border border-gray-100 rounded-2xl text-xs font-bold text-secondary uppercase tracking-widest hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm">

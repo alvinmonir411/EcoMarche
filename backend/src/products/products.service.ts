@@ -71,11 +71,11 @@ export class ProductsService {
     }
 
     if (query.size) {
-      productsQuery.andWhere("product.size = :size", { size: query.size });
+      productsQuery.andWhere("product.sizes LIKE :size", { size: `%${query.size}%` });
     }
 
     if (query.color) {
-      productsQuery.andWhere("product.color = :color", { color: query.color });
+      productsQuery.andWhere("product.colors LIKE :color", { color: `%${query.color}%` });
     }
 
     if (query.minPrice !== undefined) {

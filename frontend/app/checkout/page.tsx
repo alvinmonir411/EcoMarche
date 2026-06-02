@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { orderApi } from "@/services/api";
 import { getImageUrl } from "@/utils/image";
-import { FASTLAIN_PLACEHOLDER } from "@/utils/fashionImages";
+import { ECOMARCHE_PLACEHOLDER } from "@/utils/fashionImages";
 
 function CheckoutLineImage({ src, alt }: { src?: string; alt: string }) {
   const [imageSrc, setImageSrc] = useState(getImageUrl(src));
@@ -22,7 +22,7 @@ function CheckoutLineImage({ src, alt }: { src?: string; alt: string }) {
       alt={alt}
       fill
       sizes="80px"
-      onError={() => setImageSrc(FASTLAIN_PLACEHOLDER)}
+      onError={() => setImageSrc(ECOMARCHE_PLACEHOLDER)}
       className="object-cover"
     />
   );
@@ -33,13 +33,12 @@ export default function CheckoutPage() {
   const { cart, clearCart, coupon, discountAmount, subtotal, shipping, totalPrice } = useCart();
   
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     email: "",
-    address: "",
-    city: "",
-    state: "",
-    zip: "",
+    division: "",
+    district: "",
+    upazila: "",
+    addressLine: "",
     phone: "",
     paymentMethod: "cash_on_delivery"
   });
@@ -55,8 +54,7 @@ export default function CheckoutPage() {
         const user = JSON.parse(userStr);
         setFormData(prev => ({
           ...prev,
-          firstName: user.name?.split(' ')[0] || "",
-          lastName: user.name?.split(' ').slice(1).join(' ') || "",
+          fullName: user.name || "",
           email: user.email || ""
         }));
       } catch (e) {}
@@ -81,10 +79,10 @@ export default function CheckoutPage() {
     try {
       // Prepare order data for backend DTO - ONLY send fields expected by the backend
       const orderData = {
-        customerName: `${formData.firstName} ${formData.lastName}`.trim(),
+        customerName: formData.fullName.trim(),
         customerEmail: formData.email,
         customerPhone: formData.phone,
-        shippingAddress: `${formData.address}, ${formData.city}, ${formData.state} ${formData.zip}`,
+        shippingAddress: `${formData.addressLine}, Upazila: ${formData.upazila}, District: ${formData.district}, Division: ${formData.division}`,
         deliveryCharge: shipping,
         paymentMethod: formData.paymentMethod,
         couponCode: coupon?.code || undefined,
@@ -153,15 +151,9 @@ export default function CheckoutPage() {
             {/* 1. Contact Information */}
             <div className="space-y-8">
               <h3 className="text-xl font-black text-secondary uppercase tracking-widest">1. Contact</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">First Name</label>
-                  <input type="text" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} required className="w-full bg-[#f8f8f8] border border-transparent focus:border-secondary px-5 py-4 text-sm font-bold transition-all outline-none" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Last Name</label>
-                  <input type="text" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} required className="w-full bg-[#f8f8f8] border border-transparent focus:border-secondary px-5 py-4 text-sm font-bold transition-all outline-none" />
-                </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Full Name</label>
+                <input type="text" name="fullName" placeholder="Full Name" value={formData.fullName} onChange={handleChange} required className="w-full bg-[#f8f8f8] border border-transparent focus:border-secondary px-5 py-4 text-sm font-bold transition-all outline-none" />
               </div>
               <div className="space-y-2">
                 <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Email Address</label>
@@ -176,23 +168,23 @@ export default function CheckoutPage() {
             {/* 2. Shipping Address */}
             <div className="space-y-8">
               <h3 className="text-xl font-black text-secondary uppercase tracking-widest border-t border-gray-100 pt-16">2. Delivery</h3>
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Street Address</label>
-                <input type="text" name="address" placeholder="Street Address" value={formData.address} onChange={handleChange} required className="w-full bg-[#f8f8f8] border border-transparent focus:border-secondary px-5 py-4 text-sm font-bold transition-all outline-none" />
-              </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">City</label>
-                  <input type="text" name="city" placeholder="City" value={formData.city} onChange={handleChange} required className="w-full bg-[#f8f8f8] border border-transparent focus:border-secondary px-5 py-4 text-sm font-bold transition-all outline-none" />
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Division</label>
+                  <input type="text" name="division" placeholder="Division" value={formData.division} onChange={handleChange} required className="w-full bg-[#f8f8f8] border border-transparent focus:border-secondary px-5 py-4 text-sm font-bold transition-all outline-none" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">State</label>
-                  <input type="text" name="state" placeholder="State" value={formData.state} onChange={handleChange} required className="w-full bg-[#f8f8f8] border border-transparent focus:border-secondary px-5 py-4 text-sm font-bold transition-all outline-none" />
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">District</label>
+                  <input type="text" name="district" placeholder="District" value={formData.district} onChange={handleChange} required className="w-full bg-[#f8f8f8] border border-transparent focus:border-secondary px-5 py-4 text-sm font-bold transition-all outline-none" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">ZIP Code</label>
-                  <input type="text" name="zip" placeholder="ZIP Code" value={formData.zip} onChange={handleChange} required className="w-full bg-[#f8f8f8] border border-transparent focus:border-secondary px-5 py-4 text-sm font-bold transition-all outline-none" />
+                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Upazila</label>
+                  <input type="text" name="upazila" placeholder="Upazila" value={formData.upazila} onChange={handleChange} required className="w-full bg-[#f8f8f8] border border-transparent focus:border-secondary px-5 py-4 text-sm font-bold transition-all outline-none" />
                 </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Address Line</label>
+                <input type="text" name="addressLine" placeholder="House, Road, Area" value={formData.addressLine} onChange={handleChange} required className="w-full bg-[#f8f8f8] border border-transparent focus:border-secondary px-5 py-4 text-sm font-bold transition-all outline-none" />
               </div>
             </div>
 
