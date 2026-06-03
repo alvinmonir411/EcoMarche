@@ -17,7 +17,7 @@ export async function GET(request: Request) {
       prisma.order.count({ where: { orderStatus: "PENDING" } }),
     ]);
 
-    const totalSales = paidOrders.reduce((sum, order) => sum + toNumber(order.totalAmount), 0);
+    const totalSales = paidOrders.reduce((sum: number, order: any) => sum + toNumber(order.totalAmount), 0);
 
     return ok({
       stats: {
