@@ -89,7 +89,7 @@ export async function POST(
       }
     });
 
-    return ok({ review, message: "Review submitted successfully" }, 201);
+    return ok({ review, message: "Review submitted successfully" }, { status: 201 });
   } catch (error) {
     if (error instanceof Response) return error;
     if (error instanceof z.ZodError) return fail("Invalid data", 422, error.issues);

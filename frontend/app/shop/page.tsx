@@ -73,7 +73,7 @@ export default function ShopPage() {
     return category?.name || formatSlugTitle(selectedCategory);
   }, [categories, selectedCategory]);
 
-  const syncUrl = useCallback((updates: Record<string, string | number | null>) => {
+  const syncUrl = useCallback((updates: Record<string, string | number | boolean | null>) => {
     const nextParams = new URLSearchParams(searchParams.toString());
 
     Object.entries(updates).forEach(([key, value]) => {
