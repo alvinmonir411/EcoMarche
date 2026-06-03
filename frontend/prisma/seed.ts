@@ -13,7 +13,39 @@ const image = (id: string) =>
 
 async function main() {
   const adminPassword = await hash("Admin@12345", 12);
+  const superAdminPassword = await hash("136633", 12);
   const customerPassword = await hash("Customer@12345", 12);
+
+  // Super Admin — admin@gmail.com / 136633
+  await prisma.user.upsert({
+    where: { email: "admin@gmail.com" },
+    update: {
+      role: UserRole.ADMIN,
+      isActive: true,
+      password: superAdminPassword,
+    },
+    create: {
+      name: "Super Admin",
+      email: "admin@gmail.com",
+      password: superAdminPassword,
+      role: UserRole.ADMIN,
+      phone: "+8801900000000",
+      adminProfile: {
+        create: {
+          permissions: {
+            products: true,
+            orders: true,
+            settings: true,
+            customers: true,
+            banners: true,
+            coupons: true,
+            categories: true,
+            analytics: true,
+          },
+        },
+      },
+    },
+  });
 
   const admin = await prisma.user.upsert({
     where: { email: "admin@ecomarche.test" },

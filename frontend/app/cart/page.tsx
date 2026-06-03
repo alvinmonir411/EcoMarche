@@ -133,7 +133,7 @@ export default function CartPage() {
                       <div>
                         <div className="flex justify-between items-start mb-2">
                           <h3 className="text-lg md:text-xl font-bold text-secondary">{item.name}</h3>
-                          <p className="text-lg font-black text-secondary">${(Number(item.price || 0) * item.quantity).toFixed(2)}</p>
+                          <p className="text-lg font-black text-secondary">৳{(Number(item.price || 0) * item.quantity).toFixed(2)}</p>
                         </div>
                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-6">
                           {item.size && `Size: ${item.size}`} {item.size && item.color && ' | '} {item.color && `Color: ${item.color}`}
@@ -168,7 +168,7 @@ export default function CartPage() {
               {subtotal < 150 && (
                 <div className="mt-12 bg-[#f8f8f8] p-6 text-center">
                   <p className="text-xs font-bold text-secondary uppercase tracking-widest">
-                    You are ${Number(150 - subtotal).toFixed(2)} away from Free Shipping
+                    You are ৳{Number(150 - subtotal).toFixed(2)} away from Free Shipping
                   </p>
                   <div className="w-full max-w-md mx-auto h-1 bg-gray-200 mt-4 overflow-hidden">
                     <div className="h-full bg-secondary" style={{ width: `${(subtotal / 150) * 100}%` }}></div>
@@ -186,22 +186,22 @@ export default function CartPage() {
               <div className="space-y-6 mb-10 text-sm">
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-gray-500 uppercase tracking-widest text-[10px]">Subtotal</span>
-                  <span className="font-bold text-secondary">${Number(subtotal || 0).toFixed(2)}</span>
+                  <span className="font-bold text-secondary">৳{Number(subtotal || 0).toFixed(2)}</span>
                 </div>
                 {discountAmount > 0 && (
                   <div className="flex justify-between items-center text-secondary">
                     <span className="font-bold uppercase tracking-widest text-[10px]">Discount ({coupon?.code})</span>
-                    <span className="font-bold">-${Number(discountAmount).toFixed(2)}</span>
+                    <span className="font-bold">-৳{Number(discountAmount).toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-gray-500 uppercase tracking-widest text-[10px]">Shipping</span>
-                  <span className="font-bold text-secondary uppercase text-[10px] tracking-widest">{shipping === 0 ? 'Free' : `$${Number(shipping).toFixed(2)}`}</span>
+                  <span className="font-bold text-secondary uppercase text-[10px] tracking-widest">{shipping === 0 ? 'Free' : `৳${Number(shipping).toFixed(2)}`}</span>
                 </div>
                 <div className="pt-8 border-t border-gray-200 mt-8">
                   <div className="flex justify-between items-end">
                     <span className="text-sm font-bold uppercase tracking-widest text-secondary">Estimated Total</span>
-                    <span className="text-4xl font-black text-secondary leading-none">${Number(totalPrice || 0).toFixed(2)}</span>
+                    <span className="text-4xl font-black text-secondary leading-none">৳{Number(totalPrice || 0).toFixed(2)}</span>
                   </div>
                 </div>
               </div>

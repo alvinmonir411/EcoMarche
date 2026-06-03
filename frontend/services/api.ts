@@ -86,6 +86,9 @@ export const addressApi = {
 export const adminApi = {
   getStats: () => fetchApi<any>('/admin/dashboard', { method: 'GET' }),
   getUsers: () => fetchApi<any>('/admin/users', { method: 'GET' }),
+  createUser: (data: any) => fetchApi<any>('/admin/users', { method: 'POST', body: JSON.stringify(data) }),
+  updateUser: (id: string, data: any) => fetchApi<any>(`/admin/users/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  deleteUser: (id: string) => fetchApi<any>(`/admin/users/${id}`, { method: 'DELETE' }),
   getOrders: () => fetchApi<any>('/admin/orders', { method: 'GET' }),
   updateOrderStatus: (id: string, data: any) => fetchApi<any>(`/admin/orders/${id}/status`, { method: 'PATCH', body: JSON.stringify(data) }),
 };

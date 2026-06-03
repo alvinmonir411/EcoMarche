@@ -45,18 +45,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   const displayImage = getImageUrl(getProductImage());
   const [imageSrc, setImageSrc] = useState(displayImage);
+  const [isAdding, setIsAdding] = useState(false);
 
   // Sync image source if product image changes dynamically
   useEffect(() => {
     setImageSrc(displayImage);
   }, [displayImage]);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isOutOfStock) return;
+    if (isOutOfStock || isAdding) return;
     
-    addToCart({
+    setIsAdding(true);
+    await addToCart({
       id: product.id,
       name: product.name,
       price: Number(product.price || 0),
@@ -65,6 +67,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       color: product.colors?.[0] || "Default",
       quantity: 1
     });
+    setIsAdding(false);
   };
 
   const handleWishlist = (e: React.MouseEvent) => {
@@ -137,28 +140,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
         
         <div className="flex flex-wrap items-baseline gap-1.5 md:gap-2">
-           <span className="text-sm font-black text-primary md:text-base">${Number(product.discountPrice || product.price || 0).toFixed(2)}</span>
+           <span className="text-sm font-black text-primary md:text-base">৳{Number(product.discountPrice || product.price || 0).toFixed(2)}</span>
            {product.discountPrice && (
-             <span className="text-[10px] font-bold text-gray-400 line-through md:text-xs">${Number(product.price).toFixed(2)}</span>
+             <span className="text-[10px] font-bold text-gray-400 line-through md:text-xs">৳{Number(product.price).toFixed(2)}</span>
            )}
         </div>
 
         <button
           type="button"
           onClick={handleAddToCart}
-          disabled={isOutOfStock}
+          disabled={isOutOfStock || isAdding}
           className={`mt-auto flex min-h-10 w-full items-center justify-center gap-2 rounded-md border px-2 text-[10px] font-black uppercase tracking-[0.1em] transition-colors duration-300 md:min-h-11 md:text-[11px] ${
             isOutOfStock
               ? "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400"
+              : isAdding
+              ? "cursor-wait border-primary bg-primary text-white"
               : "border-primary bg-white text-primary hover:bg-primary hover:text-white"
           }`}
         >
-          {!isOutOfStock && (
+          {isAdding ? (
+            <svg className="h-4 w-4 shrink-0 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+          ) : !isOutOfStock ? (
             <svg className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
-          )}
-          {isOutOfStock ? "Out of Stock" : "Add To Cart"}
+          ) : null}
+          {isAdding ? "Adding..." : isOutOfStock ? "Out of Stock" : "Add To Cart"}
         </button>
       </div>
     </div>

@@ -94,6 +94,7 @@ model User {
   cart         Cart?
   orders       Order[]
   wishlists    Wishlist[]
+  reviews      Review[]
 
   @@index([role])
   @@index([email])
@@ -222,6 +223,7 @@ model Product {
   wishlists       Wishlist[]
   orderItems      OrderItem[]
   sectionProducts HomepageSectionProduct[]
+  reviews         Review[]
 
   @@index([slug])
   @@index([categoryId])
@@ -481,4 +483,20 @@ model Payment {
 
   @@index([status])
   @@index([method])
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String?
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([userId])
 }

@@ -9,12 +9,13 @@ const Footer = () => {
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-5 lg:gap-12">
           {/* Brand & Mission */}
           <div className="lg:col-span-2 space-y-8">
-            <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white text-lg font-black">E</div>
-              <span className="text-xl font-black text-secondary tracking-tighter">EcoMarche</span>
+            <Link href="/" className="flex items-center group">
+              <div className="relative w-32 h-10 lg:w-40 lg:h-12 flex items-center shrink-0">
+                <img src="/logo.png" alt="fastLain" className="object-contain w-full h-full group-hover:scale-105 transition-transform" />
+              </div>
             </Link>
             <p className="max-w-sm text-sm leading-relaxed text-muted">
-              EcoMarche is a premium fashion marketplace for everyday dresses, curated essentials, and responsibly made wardrobe staples.
+              fastLain is a premium fashion marketplace for everyday dresses, curated essentials, and responsibly made wardrobe staples.
             </p>
             <div className="space-y-2 text-sm text-muted">
               <p>Rampura, Dhaka, Bangladesh</p>
@@ -99,7 +100,7 @@ const Footer = () => {
 
         <div className="mt-10 flex flex-col items-center justify-between gap-6 border-t border-gray-100 pt-8 md:flex-row">
           <div className="text-[10px] font-bold text-muted uppercase tracking-widest">
-            © 2026 EcoMarche. Naturally Yours.
+            © 2026 fastLain. Naturally Yours.
           </div>
           <div className="flex gap-8">
              <div className="h-6 w-10 bg-gray-50 rounded flex items-center justify-center opacity-50"><span className="text-[8px] font-bold">VISA</span></div>

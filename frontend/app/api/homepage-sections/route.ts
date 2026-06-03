@@ -44,7 +44,6 @@ export async function GET(request: Request) {
         orderBy: { displayOrder: "asc" as const },
         include: {
           product: {
-            where: includeDisabled ? undefined : { active: true },
             include: {
               category: true,
               subCategory: true,
@@ -63,7 +62,18 @@ export async function GET(request: Request) {
       include,
     });
 
-    return ok(sections.map(serializeHomepageSection));
+    // Filter out inactive products at application level (Prisma doesn't support
+    // `where` on a to-one relation nested inside an include)
+    const filteredSections = includeDisabled
+      ? sections
+      : sections.map((section) => ({
+          ...section,
+          sectionProducts: section.sectionProducts.filter(
+            (sp) => sp.product?.active !== false,
+          ),
+        }));
+
+    return ok(filteredSections.map(serializeHomepageSection));
   } catch (error) {
     console.error("Homepage sections error", error);
     return fail("Failed to load homepage sections.", 500);

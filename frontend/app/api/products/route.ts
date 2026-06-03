@@ -93,6 +93,10 @@ export async function GET(request: Request) {
       };
     }
 
+    if (searchParams.get("inStock") === "true") {
+      where.stock = { gt: 0 };
+    }
+
     if (searchParams.get("featured") === "true") where.featured = true;
     if (searchParams.get("flashSale") === "true") where.flashSale = true;
     if (searchParams.get("newArrival") === "true") where.newArrival = true;

@@ -3,7 +3,10 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { CartProvider } from "@/context/CartContext";
+import CartDrawer from "@/components/cart/CartDrawer";
 import { WishlistProvider } from "@/context/WishlistContext";
+import FloatingContact from "@/components/ui/FloatingContact";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "EcoMarche | Naturally Yours",
@@ -21,9 +24,12 @@ export default function RootLayout({
         <CartProvider>
           <WishlistProvider>
           <Navbar />
+          <Toaster position="bottom-right" toastOptions={{ duration: 4000 }} />
           <main className="min-h-screen pb-20 lg:pb-0">
             {children}
           </main>
+          <CartDrawer />
+          <FloatingContact />
           <Footer />
           </WishlistProvider>
         </CartProvider>
@@ -31,3 +37,4 @@ export default function RootLayout({
     </html>
   );
 }
+

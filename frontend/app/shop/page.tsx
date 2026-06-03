@@ -64,6 +64,7 @@ export default function ShopPage() {
   const [maxPrice, setMaxPrice] = useState(Number(searchParams.get("maxPrice")) || 2000);
   const [sort, setSort] = useState(searchParams.get("sort") || "latest");
   const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
+  const [inStock, setInStock] = useState(searchParams.get("inStock") === "true");
   const limit = 12;
 
   const selectedCategoryName = useMemo(() => {
@@ -76,7 +77,7 @@ export default function ShopPage() {
     const nextParams = new URLSearchParams(searchParams.toString());
 
     Object.entries(updates).forEach(([key, value]) => {
-      if (value === null || value === "" || value === 0 || value === "latest" || (key === "maxPrice" && value === 2000) || (key === "page" && value === 1)) {
+      if (value === null || value === "" || value === 0 || value === false || value === "latest" || (key === "maxPrice" && value === 2000) || (key === "page" && value === 1)) {
         nextParams.delete(key);
       } else {
         nextParams.set(key, String(value));
@@ -113,6 +114,12 @@ export default function ShopPage() {
     }
   }, []);
 
+  const updateInStock = (value: boolean) => {
+    setInStock(value);
+    setPage(1);
+    syncUrl({ inStock: value, page: 1 });
+  };
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
@@ -126,6 +133,7 @@ export default function ShopPage() {
       if (selectedCategory && selectedCategory !== "all") params.category = selectedCategory;
       if (minPrice > 0) params.minPrice = minPrice;
       if (maxPrice < 2000) params.maxPrice = maxPrice;
+      if (inStock) params.inStock = "true";
 
       const res = await productApi.getAll(params);
       if (res.success) {
@@ -153,6 +161,7 @@ export default function ShopPage() {
     const nextPage = Number(searchParams.get("page")) || 1;
     const nextMinPrice = Number(searchParams.get("minPrice")) || 0;
     const nextMaxPrice = Number(searchParams.get("maxPrice")) || 2000;
+    const nextInStock = searchParams.get("inStock") === "true";
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedCategory(nextCategory);
@@ -161,6 +170,7 @@ export default function ShopPage() {
     setPage(nextPage);
     setMinPrice(nextMinPrice);
     setMaxPrice(nextMaxPrice);
+    setInStock(nextInStock);
   }, [searchParams]);
 
   useEffect(() => {
@@ -179,6 +189,7 @@ export default function ShopPage() {
     setMaxPrice(2000);
     setSort("latest");
     setPage(1);
+    setInStock(false);
     setIsFilterOpen(false);
     router.replace(pathname, { scroll: false });
   };
@@ -297,7 +308,7 @@ export default function ShopPage() {
               <div className="mb-10">
                 <div className="mb-5 flex items-center justify-between">
                   <h3 className="text-lg font-bold text-secondary">Price Range</h3>
-                  <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-bold text-primary">${minPrice} - ${maxPrice}</span>
+                  <span className="rounded-full bg-primary/10 px-2 py-1 text-[10px] font-bold text-primary">৳{minPrice} - ৳{maxPrice}</span>
                 </div>
                 <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">Max Price</p>
                 <input
@@ -310,9 +321,25 @@ export default function ShopPage() {
                   className="h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-primary"
                 />
                 <div className="mt-2 flex justify-between text-[10px] font-bold text-gray-300">
-                  <span>$0</span>
-                  <span>$2000</span>
+                  <span>৳0</span>
+                  <span>৳2000</span>
                 </div>
+              </div>
+
+              <div className="mb-10">
+                <h3 className="text-lg font-bold mb-5">Availability</h3>
+                <label className="flex items-center space-x-3 cursor-pointer group">
+                  <div className={`w-10 h-6 rounded-full transition-colors relative ${inStock ? 'bg-primary' : 'bg-gray-200'}`}>
+                    <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${inStock ? 'left-5' : 'left-1'}`}></div>
+                  </div>
+                  <input
+                    type="checkbox"
+                    className="hidden"
+                    checked={inStock}
+                    onChange={(e) => updateInStock(e.target.checked)}
+                  />
+                  <span className={`text-sm font-medium ${inStock ? 'text-primary' : 'text-gray-600'}`}>In Stock Only</span>
+                </label>
               </div>
 
               <button
@@ -431,8 +458,8 @@ export default function ShopPage() {
               <label className="block">
                 <span className="text-[10px] font-black uppercase tracking-[0.16em] text-gray-400">Max Price</span>
                 <div className="mt-2 flex items-center justify-between text-xs font-black text-primary">
-                  <span>${minPrice}</span>
-                  <span>${maxPrice}</span>
+                  <span>৳{minPrice}</span>
+                  <span>৳{maxPrice}</span>
                 </div>
                 <input
                   type="range"
@@ -443,6 +470,19 @@ export default function ShopPage() {
                   onChange={(e) => updateMaxPrice(Number(e.target.value))}
                   className="mt-3 h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-primary"
                 />
+              </label>
+
+              <label className="flex items-center justify-between pt-2">
+                <span className="text-sm font-bold text-secondary">In Stock Only</span>
+                <div className={`w-10 h-6 rounded-full transition-colors relative cursor-pointer ${inStock ? 'bg-primary' : 'bg-gray-200'}`}>
+                  <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition-all ${inStock ? 'left-5' : 'left-1'}`}></div>
+                  <input
+                    type="checkbox"
+                    className="hidden"
+                    checked={inStock}
+                    onChange={(e) => updateInStock(e.target.checked)}
+                  />
+                </div>
               </label>
 
               <div className="grid grid-cols-2 gap-3 pt-2">

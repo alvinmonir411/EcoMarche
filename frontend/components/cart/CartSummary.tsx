@@ -42,7 +42,7 @@ export function CartSummary({
 
       <div className="mt-5 flex items-center justify-between border-t border-stone-200 pt-5">
         <span className="font-semibold text-stone-950">Total</span>
-        <span className="text-xl font-bold text-stone-950">${total}</span>
+        <span className="text-xl font-bold text-stone-950">৳{total}</span>
       </div>
 
       <Link
@@ -66,7 +66,7 @@ function SummaryRow({ label, value, isDiscount = false }: SummaryRowProps) {
     <div className="flex items-center justify-between text-stone-600">
       <span>{label}</span>
       <span>
-        {isDiscount ? "-" : ""}${value}
+        {isDiscount ? "-" : ""}৳{value}
       </span>
     </div>
   );

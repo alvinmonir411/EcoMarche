@@ -60,20 +60,36 @@ export async function fetchApi<T>(endpoint: string, options: FetchOptions = {}):
        return { success: true };
     }
 
-    const data = await response.json();
+    const contentType = response.headers.get("content-type");
+    
+    if (contentType && contentType.includes("application/json")) {
+      const data = await response.json();
 
-    if (!response.ok) {
+      if (!response.ok) {
+        return {
+          success: false,
+          error: data.message || data.error || 'Something went wrong',
+        };
+      }
+
       return {
-        success: false,
-        error: data.message || data.error || 'Something went wrong',
+        success: true,
+        data: data.data !== undefined ? data.data : data,
+        message: data.message,
+      };
+    } else {
+      const text = await response.text();
+      if (!response.ok) {
+        return {
+          success: false,
+          error: `Server error (${response.status}): The server returned an invalid response.`,
+        };
+      }
+      return {
+        success: true,
+        data: text as any,
       };
     }
-
-    return {
-      success: true,
-      data: data.data !== undefined ? data.data : data,
-      message: data.message,
-    };
   } catch (error: any) {
     console.error('API Client Error:', error);
     return {

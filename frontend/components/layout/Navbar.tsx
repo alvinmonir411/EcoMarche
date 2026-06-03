@@ -28,12 +28,14 @@ const readStoredUser = (): NavbarUser | null => {
 const Navbar = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const { totalItems, successMessage: cartSuccess, error: cartError } = useCart();
+  const { totalItems, successMessage: cartSuccess, error: cartError, openCart } = useCart();
   const { wishlist, successMessage: wishlistSuccess } = useWishlist();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState<NavbarUser | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const checkUser = () => {
     setUser(readStoredUser());
@@ -65,13 +67,21 @@ const Navbar = () => {
     router.refresh();
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setShowSearch(false);
+      router.push(`/shop?search=${encodeURIComponent(searchQuery)}`);
+      setSearchQuery("");
+    }
+  };
+
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Shop', href: '/shop' },
     { name: 'Women', href: '/shop?category=women-dress' },
     { name: 'Men', href: '/shop?category=men-clothing' },
     { name: 'About', href: '/about' },
-    { name: 'Blog', href: '/blog' },
   ];
 
   return (
@@ -80,7 +90,7 @@ const Navbar = () => {
       <div className="hidden lg:block bg-primary py-2 text-center text-[10px] sm:text-xs font-bold text-white uppercase tracking-[0.2em]">
         <Container className="flex flex-col sm:flex-row justify-between items-center gap-2">
           <div className="flex gap-4">
-            <span className="hidden sm:inline">Free Delivery on orders over $120</span>
+            <span className="hidden sm:inline">Free Delivery on orders over ৳120</span>
             <span className="hidden sm:inline">30 Days Return</span>
           </div>
           <div>support@ecomarche.com</div>
@@ -122,16 +132,16 @@ const Navbar = () => {
         <Container>
           <div className="flex justify-between items-center gap-3 h-14 lg:h-20">
             {/* Logo */}
-            <Link href="/" className="flex min-w-0 items-center gap-2.5 lg:gap-3 group">
-              <div className="w-10 h-10 lg:w-12 lg:h-12 bg-primary rounded-2xl flex items-center justify-center text-white text-lg lg:text-xl font-black group-hover:rotate-6 transition-transform shrink-0">E</div>
-              <div className="flex flex-col">
-                <span className="text-base min-[360px]:text-lg lg:text-xl font-black text-secondary tracking-tighter leading-none truncate">EcoMarche</span>
-                <span className="hidden sm:block text-[10px] font-bold text-primary uppercase tracking-[0.3em] mt-1">Naturally Yours</span>
-              </div>
-            </Link>
+            <div className="flex-1 flex justify-start">
+              <Link href="/" className="flex min-w-0 items-center group">
+                <div className="relative w-32 h-10 lg:w-40 lg:h-12 flex items-center shrink-0">
+                  <img src="/logo.png" alt="fastLain" className="object-contain w-full h-full group-hover:scale-105 transition-transform" />
+                </div>
+              </Link>
+            </div>
 
             {/* Desktop Links - Centered */}
-            <div className="hidden lg:flex items-center space-x-10">
+            <div className="hidden lg:flex flex-1 justify-center items-center space-x-10">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
@@ -145,10 +155,27 @@ const Navbar = () => {
             </div>
 
             {/* Actions */}
-            <div className="hidden lg:flex items-center space-x-8">
-              <button className="text-secondary hover:text-primary transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-              </button>
+            <div className="hidden lg:flex flex-1 justify-end items-center space-x-8">
+              <div className="relative">
+                <button 
+                  onClick={() => setShowSearch(!showSearch)}
+                  className="text-secondary hover:text-primary transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                </button>
+                {showSearch && (
+                  <form onSubmit={handleSearch} className="absolute right-0 top-full mt-4 w-64 bg-white shadow-xl rounded-xl border border-gray-100 p-2 z-50 animate-in fade-in slide-in-from-top-2">
+                    <input
+                      type="search"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search..."
+                      autoFocus
+                      className="w-full bg-accent/20 border-transparent focus:border-primary focus:ring-primary rounded-lg px-4 py-2 outline-none transition-all text-sm"
+                    />
+                  </form>
+                )}
+              </div>
               <Link href="/wishlist" className="text-secondary hover:text-primary transition-colors relative group">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
                 {wishlist.length > 0 && (
@@ -157,14 +184,14 @@ const Navbar = () => {
                   </span>
                 )}
               </Link>
-              <Link href="/cart" className="text-secondary hover:text-primary transition-colors relative group">
+              <button onClick={openCart} className="text-secondary hover:text-primary transition-colors relative group">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
                 {totalItems > 0 && (
                   <span className="absolute -top-2 -right-2 bg-primary text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-black animate-in zoom-in border-2 border-white">
                     {totalItems}
                   </span>
                 )}
-              </Link>
+              </button>
 
               <div className="h-6 w-[1px] bg-gray-100"></div>
 
@@ -192,10 +219,10 @@ const Navbar = () => {
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex shrink-0 items-center gap-2 min-[360px]:gap-3">
-              <Link href="/cart" className="text-secondary relative p-2">
+              <button onClick={openCart} className="text-secondary relative p-2">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
                 {totalItems > 0 && <span className="absolute -top-1 -right-1 bg-primary text-white text-[8px] w-3 h-3 rounded-full flex items-center justify-center font-black">{totalItems}</span>}
-              </Link>
+              </button>
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="text-secondary focus:outline-none p-2 bg-gray-50 rounded-xl"

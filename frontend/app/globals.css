@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #163020; /* EcoMarche deep forest */
-  --color-primary-light: #244633;
-  --color-secondary: #0b0b0a; /* premium black */
+  --color-primary: #00B4CC; /* fastLain teal */
+  --color-primary-light: #33C3D6;
+  --color-secondary: #102042; /* fastLain navy */
   --color-accent: #f6f2ea; /* soft beige */
   --color-accent-dark: #e8dfd2;
   --color-muted: #74716b;

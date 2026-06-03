@@ -38,6 +38,9 @@ type CartContextType = {
   isLoading: boolean;
   error: string | null;
   successMessage: string | null;
+  isCartOpen: boolean;
+  openCart: () => void;
+  closeCart: () => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -48,7 +51,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const router = useRouter();
+
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
 
   const formatError = (err: string | string[] | undefined): string => {
     if (!err) return "";
@@ -158,6 +165,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       if (res.success) {
         setSuccessMessage(`${item.name || 'Item'} added to cart!`);
         await fetchCart();
+        openCart(); // Auto open cart on add
       } else {
         setError(formatError(res.error) || "Failed to add item to cart");
       }
@@ -265,7 +273,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       discountAmount,
       isLoading,
       error,
-      successMessage
+      successMessage,
+      isCartOpen,
+      openCart,
+      closeCart
     }}>
       {children}
     </CartContext.Provider>

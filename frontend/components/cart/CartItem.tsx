@@ -58,7 +58,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
           <p className="mt-2 text-sm text-stone-600">
             Size: {item.selectedSize || product.sizes?.[0] || 'N/A'} | Color: {item.selectedColor || product.colors?.[0] || 'N/A'}
           </p>
-          <p className="mt-2 font-semibold text-stone-950">${price}</p>
+          <p className="mt-2 font-semibold text-stone-950">৳{price}</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 md:justify-end">
@@ -94,7 +94,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove }: CartItemProps) {
           </button>
 
           <p className="w-full text-right font-semibold text-stone-950 md:w-24">
-            ${itemTotal.toFixed(2)}
+            ৳{itemTotal.toFixed(2)}
           </p>
         </div>
       </div>
