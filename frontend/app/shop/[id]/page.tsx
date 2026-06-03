@@ -156,7 +156,7 @@ export default function ShopProductDetailsPage() {
     );
   }
 
-  const averageRating = product.rating || (reviews.length ? (reviews.reduce((a, b) => a + b.rating, 0) / reviews.length) : 0);
+  const averageRating = product.rating || (reviews.length ? (reviews.reduce((a: number, b: any) => a + b.rating, 0) / reviews.length) : 0);
 
   return (
     <div className="py-10 md:py-20 bg-white">

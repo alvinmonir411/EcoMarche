@@ -62,7 +62,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const subtotal = cart.items.reduce((total, item) => {
+    const subtotal = cart.items.reduce((total: number, item: any) => {
       const product = serializeProduct(item.product);
       return total + (product.discountPrice ?? product.price) * item.quantity;
     }, 0);

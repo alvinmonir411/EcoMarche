@@ -79,7 +79,7 @@ export async function POST(
       select: { rating: true }
     });
     
-    const avgRating = allReviews.reduce((acc, curr) => acc + curr.rating, 0) / allReviews.length;
+    const avgRating = allReviews.reduce((acc: number, curr: any) => acc + curr.rating, 0) / allReviews.length;
     
     await prisma.product.update({
       where: { id: productId },

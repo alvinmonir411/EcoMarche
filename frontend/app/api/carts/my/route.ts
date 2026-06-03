@@ -36,7 +36,7 @@ export async function GET(request: Request) {
     return ok({
       id: cart.id,
       items,
-      subtotal: items.reduce((total, item) => total + item.price * item.quantity, 0),
+      subtotal: items.reduce((total: number, item: any) => total + item.price * item.quantity, 0),
     });
   } catch (error) {
     console.error("Cart load error", error);
